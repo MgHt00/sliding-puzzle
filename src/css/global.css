@@ -1,5 +1,59 @@
+:root {
+  --font-rock: "Rock 3D", system-ui;
+  --font-roboto: "Roboto", sans-serif;
+  --puzzle-board-columns: 3;
+  --puzzle-board-rows: 3;
+  --puzzle-board-gap: 5px;
+  --puzzle-board-wdith: min(80vw, 500px);
+  --puzzle-board-border: 2px solid #333;
+
+  --puzzle-tile-font-size: 80px;
+  --puzzle-tile-font-weight: 400;
+  --puzzle-tile-background-color: lightslategray;
+  --puzzle-tile-border: 1px solid #adadad;
+  --puzzle-tile-transition: transform 0.3s ease-in-out;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
 body {
   display: grid;
   place-content: center;
   height: 100vh;
+}
+
+.puzzle-board {
+  display: grid;
+  grid-template-columns: repeat(var(--puzzle-board-columns, 3), 1fr);
+  grid-template-rows: repeat(var(--puzzle-board-rows, 3), 1fr);
+  gap: var(--puzzle-board-gap, 5px);
+  width: var(--puzzle-board-wdith, min(80vw, 500px)); /* Responsive width, max 500px */
+  aspect-ratio: 1 / 1; /* Keep it square */
+  border: var(--puzzle-board-border, 2px solid #333);
+}
+
+.puzzle-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  font-family: var(--font-rock, system-ui);
+  font-size: var(--puzzle-tile-font-size, 80px);
+  font-weight: var(--puzzle-tile-font-weight, 400);
+  background-color: var(--puzzle-tile-background-color,lightslategray);
+  border: var(--puzzle-tile-border, 1px solid #adadad);
+  transition: var(--puzzle-tile-transition, transform 0.3s ease-in-out); /* For sliding animation */
+  user-select: none; /* Prevent text selection on tiles */
+}
+
+.empty-tile {
+  background-color: transparent; /* or a distinct color for the empty spot */
+  border: 1px dashed #aaa;
+  cursor: default;
 }
