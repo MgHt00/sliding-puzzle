@@ -1,12 +1,11 @@
 import '../lib/bootstrap.bundle.js';
-import { initializeBoard } from './utils/boardUtils.js';
+import { startGame } from './components/loadingManager.js';
 
 /**
  * Main function to initialize the puzzle.
  */
 function init() {
-  console.log('Initializing puzzle...');
-  initializeBoard({ contentType: 'numbers' });
+  startGame();
 }
 
 init();
