@@ -1,4 +1,5 @@
 import { initializeBoard } from '../utils/boardUtils.js';
+import { addTileClickListeners } from './interactionManager.js';
 
 /**
  * Manages the game's startup sequence.
@@ -9,4 +10,7 @@ export function startGame() {
   // Future: Show a loading spinner or welcome screen here.
 
   initializeBoard({ contentType: 'numbers' });
+
+  // Once the board is set up, add the interaction listeners.
+  addTileClickListeners();
 }
