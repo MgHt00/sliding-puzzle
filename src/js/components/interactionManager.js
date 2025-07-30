@@ -1,5 +1,6 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
+import { swapTiles } from '../utils/boardUtils.js';
 
 /**
  * Handles the click event on a puzzle tile.
@@ -10,6 +11,10 @@ function _handleTileClick(event) {
   const clickedTile = event.target;
   console.log('Tile clicked:', clickedTile.innerHTML);
   // Future logic for checking if the tile can move and then moving it will go here.
+
+  const emptyTile = SELECTORS.emptyTile();
+  swapTiles({ sourceTile: clickedTile, targetTile: emptyTile });
+
 }
 
 /**

@@ -63,3 +63,15 @@ export function initializeBoard({ contentType = 'numbers' } = {}) {
       console.error(`Unknown content type: ${contentType}`);
   }
 }
+
+export function swapTiles({ sourceTile, targetTile }) {
+  console.info('Swapping tiles...');
+
+  // Move the content from the clicked tile to the (previously) empty tile
+  targetTile.innerHTML = sourceTile.innerHTML;
+  targetTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
+
+  // The clicked tile now becomes the new empty tile
+  sourceTile.innerHTML = '';
+  sourceTile.classList.add(CSS_CLASSES.EMPTY_TILE);
+}
