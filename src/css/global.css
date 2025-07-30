@@ -54,6 +54,7 @@ body {
 
 .empty-tile {
   background-color: transparent; /* or a distinct color for the empty spot */
-  border: 1px dashed #aaa;
+  /*border: 1px dashed #aaa;*/
+  border: none;
   cursor: default;
 }

@@ -6,7 +6,7 @@ import { initializeBoard } from './utils/boardUtils.js';
  */
 function init() {
   console.log('Initializing puzzle...');
-  initializeBoard();
+  initializeBoard({ contentType: 'numbers' });
 }
 
 init();
