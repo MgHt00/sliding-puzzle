@@ -1,6 +1,7 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
-import { swapTiles, isTileMovable } from '../utils/boardUtils.js';
+import { isTileMovable } from '../utils/boardUtils.js';
+import { swapTiles } from '../utils/animationUtils.js';
 
 let isAnimating = false;
 
