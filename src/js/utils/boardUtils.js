@@ -166,30 +166,37 @@ export function swapTiles({ sourceTile, targetTile }) {
     targetTile.style.transform = `translate(${-dx}px, ${-dy}px)`;
 
     // Listen for the end of the transition on the moving tile
-    sourceTile.addEventListener('transitionend', () => {
-      // Temporarily disable transitions to prevent a visual "snap-back"
-      sourceTile.style.transition = 'none';
-      targetTile.style.transition = 'none';
+    sourceTile.addEventListener('transitionend', () => { // automatically remove the event listener after it has been executed just one time
+      // By nesting requestAnimationFrames, we ensure each step happens on a separate
+      // rendering frame, giving the browser time to process the style changes
+      // and preventing the "snap-back" animation glitch.
 
-      // Force the browser to apply the 'transition: none' style change immediately.
-      // Reading a property like offsetHeight triggers a reflow, ensuring the next lines are not animated.
-      sourceTile.offsetHeight;
-
-      // Reset transforms and perform the actual DOM update
-      sourceTile.style.transform = '';
-      targetTile.style.transform = '';
-      targetTile.innerHTML = sourceTile.innerHTML;
-      targetTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
-      sourceTile.innerHTML = '';
-      sourceTile.classList.add(CSS_CLASSES.EMPTY_TILE);
-
-      // Re-enable transitions for the next move and resolve the promise.
-      // LT02: Using rAF ensures the browser has painted the final state before re-enabling transitions.
+      // Frame 1: Disable transitions.
       requestAnimationFrame(() => {
-        sourceTile.style.transition = '';
-        targetTile.style.transition = '';
-        resolve();
+        sourceTile.style.transition = 'none';
+        targetTile.style.transition = 'none';
+
+        // Frame 2: Perform the DOM swap and reset the transforms.
+        // This happens on the next frame, after the browser has processed 'transition: none'.
+        requestAnimationFrame(() => {
+          // Perform the actual DOM update
+          targetTile.innerHTML = sourceTile.innerHTML;
+          targetTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
+          sourceTile.innerHTML = '';
+          sourceTile.classList.add(CSS_CLASSES.EMPTY_TILE);
+
+          // Reset the transforms now that transitions are disabled.
+          sourceTile.style.transform = '';
+          targetTile.style.transform = '';
+
+          // Frame 3: Re-enable transitions for the next move and resolve the promise.
+          requestAnimationFrame(() => {
+            sourceTile.style.transition = '';
+            targetTile.style.transition = '';
+            resolve();
+          });
+        });
       });
-    }, { once: true }); // automatically remove the event listener after it has been executed just one time
+    }, { once: true });
   });
 }
