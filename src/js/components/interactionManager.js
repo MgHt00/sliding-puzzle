@@ -1,20 +1,31 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
-import { swapTiles } from '../utils/boardUtils.js';
+import { swapTiles, isTileMovable } from '../utils/boardUtils.js';
+
+let isAnimating = false;
 
 /**
  * Handles the click event on a puzzle tile.
- * For now, it just logs the clicked tile's content.
+ * Checks if the tile is movable and initiates the swap if it is.
  * @param {Event} event - The click event object.
  */
 function _handleTileClick(event) {
+  if (isAnimating) {
+    console.warn('Animation in progress, please wait.');
+    return;
+  }
+
   const clickedTile = event.target;
-  console.log('Tile clicked:', clickedTile.innerHTML);
-  // Future logic for checking if the tile can move and then moving it will go here.
-
   const emptyTile = SELECTORS.emptyTile();
-  swapTiles({ sourceTile: clickedTile, targetTile: emptyTile });
 
+  if (isTileMovable(clickedTile, emptyTile)) {
+    console.log('Tile is movable, swapping...');
+    isAnimating = true;
+    swapTiles({ sourceTile: clickedTile, targetTile: emptyTile }).then(() => {
+      isAnimating = false;
+      // Future: Check for win condition here.
+    });
+  }
 }
 
 /**

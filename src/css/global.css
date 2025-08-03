@@ -1,3 +1,6 @@
+/* IMPORTANT: These custom properties are referenced in JavaScript.
+ * If you change their names here, make sure to update them in
+ * `src/js/constants/cssClassNames.js` as well. */
 :root {
   --font-rock: "Rock 3D", system-ui;
   --font-roboto: "Roboto", sans-serif;
