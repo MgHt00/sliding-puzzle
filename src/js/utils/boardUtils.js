@@ -1,5 +1,6 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
+import { CONTENT_TYPES } from '../constants/appConstants.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 
 /**
@@ -105,7 +106,7 @@ export function isTileMovable(tile, emptyTile) {
  * Initializes the puzzle board by querying for tiles, designating an empty one,
  * generating the number sequence, and rendering the numbers onto the tiles.
  */
-export function initializeBoard({ contentType = 'numbers' } = {}) {
+export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
   // The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
   console.info('Initializing board...');
   const allTiles = SELECTORS.allTiles();
@@ -129,7 +130,7 @@ export function initializeBoard({ contentType = 'numbers' } = {}) {
   );
 
   switch (contentType) {
-    case 'numbers': {
+    case CONTENT_TYPES.ARABIC_NUMBERS: {
       const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false });
       _renderBoard(tilesToRenderOn, numbers);
       break;

@@ -3,7 +3,8 @@ export const STATE_KEYS = {
 }
 
 export const CONTENT_TYPES = {
-  DEFAULT: 'numbers',
-  NUMBERS: 'numbers',
-  // PHOTOS: 'photos', // Example for future use
+  DEFAULT: 'arabic-numbers',
+  ARABIC_NUMBERS: 'arabic-numbers',
+  // JAPANESE_NUMBERS: 'japanese-numbers', // for future use
+  // PHOTOS: 'photos', // for future use
 }
