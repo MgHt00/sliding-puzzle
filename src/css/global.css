@@ -2,8 +2,19 @@
  * If you change their names here, make sure to update them in
  * `src/js/constants/cssClassNames.js` as well. */
 :root {
+  --body-background: rgb(27, 34, 53);
+
+  --theme-night-darker: #222831;
+  --theme-night-dark: #393E46;
+  --theme-night-light: #948979;
+  --theme-night-ascent: #DFD0B8;
+
   --font-rock: "Rock 3D", system-ui;
   --font-roboto: "Roboto", sans-serif;
+  --font-yomogi: "Yomogi", cursive;
+  --font-bangers: "Bangers", system-ui;
+  --font-knewave: "Knewave", system-ui;
+
   --puzzle-board-columns: 3;
   --puzzle-board-rows: 3;
   --puzzle-board-gap: 5px;
@@ -13,9 +24,9 @@
   --puzzle-tile-font-size: 55px;
   --puzzle-tile-font-weight: 400;
   --puzzle-tile-text-shadow: 3px 3px 2px #444444;
-  --puzzle-tile-background-color: lightslategray;
-  --puzzle-tile-border: 1px solid #adadad;
+  --puzzle-tile-border: 1px solid var(--theme-night-ascent);
   --puzzle-tile-transition: transform 0.3s ease-in-out;
+
 }
 
 * {
@@ -28,6 +39,8 @@ body {
   display: grid;
   place-content: center;
   height: 100vh;
+  background: var(--theme-night-darker);
+  color: var(--theme-night-ascent, #ffffff);
 }
 
 .puzzle-board {
@@ -37,6 +50,8 @@ body {
   gap: var(--puzzle-board-gap, 5px);
   width: var(--puzzle-board-width, min(80vw, 300px)); /* Responsive width, max 500px */
   aspect-ratio: 1 / 1; /* Keep it square */
+
+  background: var(--theme-night-dark, lightslategray);
   border: var(--puzzle-board-border, 2px solid #333);
 }
 
@@ -47,11 +62,12 @@ body {
   width: 100%;
   height: 100%;
 
-  font-family: var(--font-rock, system-ui);
+  font-family: var(--font-knewave, system-ui);
   font-size: var(--puzzle-tile-font-size, 55px);
   font-weight: var(--puzzle-tile-font-weight, 400);
   text-shadow: var(--puzzle-tile-text-shadow, 3px 3px 2px #444444);
-  background-color: var(--puzzle-tile-background-color,lightslategray);
+  background: var(--theme-night-dark);
+
   border: var(--puzzle-tile-border, 1px solid #adadad);
   transition: var(--puzzle-tile-transition, transform 0.3s ease-in-out); /* For sliding animation */
   user-select: none; /* Prevent text selection on tiles */

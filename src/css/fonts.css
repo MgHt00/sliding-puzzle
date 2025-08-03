@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rock+3D&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Knewave&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rock+3D&family=Yomogi&display=swap');
 
 .roboto {
   font-family: "Roboto", sans-serif;
@@ -7,6 +7,24 @@
 
 .rock3d {
   font-family: "Rock 3D", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.yomogi-regular {
+  font-family: "Yomogi", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bangers-regular {
+  font-family: "Bangers", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.knewave-regular {
+  font-family: "Knewave", system-ui;
   font-weight: 400;
   font-style: normal;
 }
