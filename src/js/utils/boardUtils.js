@@ -1,6 +1,7 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
-import { CONTENT_TYPES } from '../constants/appConstants.js';
+import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
+import { globals } from '../services/globals.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 
 /**
@@ -141,5 +142,51 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
     //   break;
     default:
       console.error(`Unknown content type: ${contentType}`);
+  }
+}
+
+/**
+ * Checks if the tiles are in the correct Arabic numeral sequence (1, 2, 3, ...).
+ * @param {Array<Element>} allTiles - The array of all tile elements.
+ * @returns {boolean} - True if the sequence is correct.
+ */
+function _isArabicSequence(allTiles) {
+  // Iterate through all but the last tile to check for sequential order.
+  for (let i = 0; i < allTiles.length - 1; i++) {
+    const tile = allTiles[i];
+    const tileNumber = parseInt(tile.innerHTML, 10);
+    // The tile's content (number) should match its position in the grid (index + 1).
+    if (tileNumber !== i + 1) {
+      return false; // Found a tile out of order.
+    }
+  }
+  return true; // All tiles are in the correct order.
+}
+
+/**
+ * Checks if the puzzle is in its winning state.
+ * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)
+ * and the last position is occupied by the empty tile.
+ * @returns {boolean} - True if the win condition is met.
+ */
+export function checkWinCondition() {
+  console.info('Checking win condition...');
+  const allTiles = Array.from(SELECTORS.allTiles());
+
+  // The win condition requires the last tile to be the empty one.
+  const lastTile = allTiles[allTiles.length - 1];
+  if (!lastTile.classList.contains(CSS_CLASSES.EMPTY_TILE)) {
+    return false;
+  }
+
+  const contentType = globals.state[STATE_KEYS.CONTENT_TYPE];
+  switch (contentType) {
+    case CONTENT_TYPES.ARABIC_NUMBERS:
+      return _isArabicSequence(allTiles);
+    // case CONTENT_TYPES.JAPANESE_NUMBERS:
+    //   return _isJapaneseSequence(allTiles);
+    default:
+      console.error(`Win condition check not implemented for content type: ${contentType}`);
+      return false;
   }
 }
