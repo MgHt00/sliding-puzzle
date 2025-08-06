@@ -2,6 +2,7 @@ import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { isTileMovable, checkWinCondition } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
+import { fetchContentType } from '../services/globalDataManager.js';
 
 let isAnimating = false;
 
@@ -25,7 +26,7 @@ function _handleTileClick(event) {
     swapTiles({ sourceTile: clickedTile, targetTile: emptyTile }).then(() => {
       isAnimating = false;
       // After the animation, check if the player has won.
-      if (checkWinCondition()) {
+      if (checkWinCondition(fetchContentType())) {
         console.log('Congratulations! You have won!');
         // Future: Display a victory message to the user.
       }

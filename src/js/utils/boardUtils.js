@@ -146,6 +146,46 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = 
 }
 
 /**
+ * Initializes the puzzle board in a solved state for testing purposes.
+ * The empty tile is placed at the end and numbers are in sequential order.
+ * @param {object} [options={}] - The options for initializing the board.
+ * @param {string} [options.contentType=CONTENT_TYPES.DEFAULT] - The type of content to render.
+ */
+export function initializeSolvedBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
+  console.info('Initializing solved board for testing...');
+  const allTiles = SELECTORS.allTiles();
+  const { columns, rows } = _getGridDimensions();
+  const tileCount = allTiles.length;
+
+  if (tileCount !== columns * rows) {
+    console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
+    return;
+  }
+
+  // Sets the data-row and data-col attributes
+  _setTileCoordinates(allTiles, columns);
+
+  // For a solved state, the empty tile MUST be the last one.
+  allTiles[tileCount - 1].classList.add(CSS_CLASSES.EMPTY_TILE);
+
+  // Filter out the newly created empty tile to get the list of tiles to render numbers on.
+  const tilesToRenderOn = Array.from(allTiles).filter(
+    (tile) => !tile.classList.contains(CSS_CLASSES.EMPTY_TILE)
+  );
+
+  switch (contentType) {
+    case CONTENT_TYPES.ARABIC_NUMBERS: {
+      // For a solved state, the sequence MUST NOT be random.
+      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random: false });
+      _renderBoard(tilesToRenderOn, numbers);
+      break;
+    }
+    default:
+      console.error(`Unknown content type: ${contentType}`);
+  }
+}
+
+/**
  * Checks if the tiles are in the correct Arabic numeral sequence (1, 2, 3, ...).
  * @param {Array<Element>} allTiles - The array of all tile elements.
  * @returns {boolean} - True if the sequence is correct.
@@ -168,8 +208,9 @@ function _isArabicSequence(allTiles) {
  * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)
  * and the last position is occupied by the empty tile.
  * @returns {boolean} - True if the win condition is met.
+ * @param {string} contentType - The content type to check against (e.g., 'arabic-numbers').
  */
-export function checkWinCondition() {
+export function checkWinCondition(contentType) {
   console.info('Checking win condition...');
   const allTiles = Array.from(SELECTORS.allTiles());
 
@@ -179,7 +220,6 @@ export function checkWinCondition() {
     return false;
   }
 
-  const { contentType, _ } = fetchState();
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS:
       return _isArabicSequence(allTiles);
