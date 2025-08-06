@@ -1,7 +1,7 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
 import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
-import { globals } from '../services/globals.js';
+import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 
 /**
@@ -107,8 +107,8 @@ export function isTileMovable(tile, emptyTile) {
  * Initializes the puzzle board by querying for tiles, designating an empty one,
  * generating the number sequence, and rendering the numbers onto the tiles.
  */
-export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
-  // The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
+export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = CONTENT_TYPES.RANDOM } = {}) {
+  // LT03 The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
   console.info('Initializing board...');
   const allTiles = SELECTORS.allTiles();
   const { columns, rows } = _getGridDimensions();
@@ -132,7 +132,7 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
 
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS: {
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false });
+      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
       _renderBoard(tilesToRenderOn, numbers);
       break;
     }
@@ -179,7 +179,7 @@ export function checkWinCondition() {
     return false;
   }
 
-  const contentType = globals.state[STATE_KEYS.CONTENT_TYPE];
+  const { contentType, _ } = fetchState();
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS:
       return _isArabicSequence(allTiles);
