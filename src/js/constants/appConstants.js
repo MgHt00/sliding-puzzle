@@ -10,3 +10,7 @@ export const CONTENT_TYPES = {
   // JAPANESE_NUMBERS: 'japanese-numbers', // for future use
   // PHOTOS: 'photos', // for future use
 }
+
+export const TEXT = {
+  WON: 'Congratulations! You have won!',
+}

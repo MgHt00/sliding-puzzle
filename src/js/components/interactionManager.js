@@ -2,6 +2,7 @@ import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { isTileMovable, checkWinCondition } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
+import { showWinningScreen, hideWinningScreen } from '../utils/domHelpers.js';
 import { fetchContentType } from '../services/globalDataManager.js';
 
 let isAnimating = false;
@@ -27,8 +28,8 @@ function _handleTileClick(event) {
       isAnimating = false;
       // After the animation, check if the player has won.
       if (checkWinCondition(fetchContentType())) {
-        console.log('Congratulations! You have won!');
-        // Future: Display a victory message to the user.
+        //console.info("✅ SUCCESS: Player has won!")
+        showWinningScreen();
       }
     });
   }
@@ -38,7 +39,7 @@ function _handleTileClick(event) {
  * Adds a click event listener to the puzzle board using event delegation.
  * This is more efficient than adding a listener to every single tile.
  */
-export function addTileClickListeners() {
+function _addTileClickListeners() {
   console.info('Adding tile click listeners...');
   const board = SELECTORS.board();
   if (!board) {
@@ -52,4 +53,22 @@ export function addTileClickListeners() {
       _handleTileClick(event);
     }
   });
+}
+
+function _addWinAlertCloseListener() {
+  const btnCloseAlert = SELECTORS.btnCloseWinAlert();
+  if (!btnCloseAlert) {
+    console.error('Winning alert close button not found.');
+    return;
+  }
+
+  btnCloseAlert.addEventListener('click', () => {
+    hideWinningScreen();
+  });
+}
+
+
+export function addAllClickListeners() {
+  _addTileClickListeners();
+  _addWinAlertCloseListener();
 }

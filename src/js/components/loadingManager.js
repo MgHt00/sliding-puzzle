@@ -1,5 +1,5 @@
 import { initializeBoard, initializeSolvedBoard, checkWinCondition } from '../utils/boardUtils.js';
-import { addTileClickListeners } from './interactionManager.js';
+import { addAllClickListeners } from './interactionManager.js';
 import { fetchState } from '../services/globalDataManager.js';
 
 /**
@@ -31,5 +31,5 @@ export function startGame() {
   }
 
   // Once the board is set up, add the interaction listeners.
-  addTileClickListeners();
+  addAllClickListeners();
 }

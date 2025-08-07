@@ -1,19 +1,15 @@
 import '../lib/bootstrap.bundle.js';
-import { startGame } from './components/loadingManager.js';
-import { blackoutScreen, unBlackoutScreen } from './utils/domHelpers.js';
+import { startGame } from './components/loadingManager.js'; // eslint-disable-line no-unused-vars
+import { showLoadingScreen, hideLoadingScreen, showWinningScreen } from './utils/domHelpers.js'; // eslint-disable-line no-unused-vars
 
 /**
  * Main function to initialize the puzzle.
  */
 function init() {
-  // Show the loading spinner and overlay.
-  blackoutScreen();
-
-  // Use setTimeout to yield to the browser's rendering engine.
-  // This ensures the spinner is visible before the heavy work of startGame() begins.
+  showLoadingScreen();
   setTimeout(() => {
     startGame();
-    unBlackoutScreen();
+    hideLoadingScreen();
   }, 0);
 }
 

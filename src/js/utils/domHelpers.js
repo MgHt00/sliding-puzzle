@@ -29,12 +29,36 @@ function _hideLoadingSpinner() {
   }
 }
 
-export function blackoutScreen() {
+function _showWinningAlert() {
+  const winningAlert = SELECTORS.winningAlert();
+  if (winningAlert) {
+    winningAlert.classList.remove(CSS_CLASSES.D_NONE);
+  }
+}
+
+function _hideWinningAlert() {
+  const winningAlert = SELECTORS.winningAlert();
+  if (winningAlert) {
+    winningAlert.classList.add(CSS_CLASSES.D_NONE);
+  }
+}
+
+export function showLoadingScreen() {
   _showOverlay();
   _showLoadingSpinner();
 }
 
-export function unBlackoutScreen() {
+export function hideLoadingScreen() {
   _hideOverlay();
   _hideLoadingSpinner();
+}
+
+export function showWinningScreen() {
+  _showOverlay();
+  _showWinningAlert();
+}
+
+export function hideWinningScreen() {
+  _hideWinningAlert();
+  _hideOverlay();
 }

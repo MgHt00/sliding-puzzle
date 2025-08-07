@@ -11,4 +11,6 @@ export const CSS_CLASSES = {
   BOARD: 'puzzle-board',
   TILE: 'puzzle-tile',
   EMPTY_TILE: 'empty-tile',
+  WINNING_ALERT: "winning-alert",
+  BTN_CLOSE_WIN_ALERT: 'btn-close-win-alert',
 };
