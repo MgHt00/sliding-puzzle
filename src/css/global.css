@@ -26,9 +26,14 @@
 
   --puzzle-tile-font-size: 55px;
   --puzzle-tile-font-weight: 400;
-  --puzzle-tile-text-shadow: 3px 3px 2px #444444;
+  --puzzle-tile-border-radius: 5px;
+  --puzzle-tile-text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   --puzzle-tile-border: 1px solid var(--color-night-ascent);
-  --puzzle-tile-transition: transform 0.3s ease-in-out;
+  --puzzle-tile-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --puzzle-tile-hover-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  --puzzle-tile-hover-border-color: #fff;
+  --puzzle-empty-tile-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5);
+  --puzzle-tile-transition: transform 0.3s ease-in-out, box-shadow 0.2s ease, border-color 0.2s ease;
 
   --reset-btn-font-size: 25px;
 
@@ -71,8 +76,11 @@ body {
   gap: var(--puzzle-board-gap, 5px);
   width: var(--puzzle-board-width, min(80vw, 300px)); /* Responsive width, max 300px */
   aspect-ratio: 1 / 1; /* Keep it square */
-  background: var(--theme-background-color);
   border: var(--puzzle-board-border, 2px solid #333);
+  padding: 5px; /* Add some padding to frame the tiles */
+  border-radius: 8px; /* Soften the corners */
+  background: var(--color-night-dark); /* A slightly lighter background */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* Give it an inset shadow for depth */
 }
 
 .puzzle-tile {
@@ -85,18 +93,28 @@ body {
   font-family: var(--theme-decorative-font-family);
   font-size: var(--puzzle-tile-font-size, 55px);
   font-weight: var(--puzzle-tile-font-weight, 400);
-  text-shadow: var(--puzzle-tile-text-shadow, 3px 3px 2px #444444);
+  text-shadow: var(--puzzle-tile-text-shadow);
   background: var(--theme-background-color);
 
-  border: var(--puzzle-tile-border, 1px solid #adadad);
-  transition: var(--puzzle-tile-transition, transform 0.3s ease-in-out); /* For sliding animation */
+  border: var(--puzzle-tile-border);
+  border-radius: var(--puzzle-tile-border-radius, 5px); /* Softer corners for tiles */
+  transition: var(--puzzle-tile-transition); /* For sliding and hover animations */
   user-select: none; /* Prevent text selection on tiles */
+  box-shadow: var(--puzzle-tile-shadow, 0 4px 6px rgba(0, 0, 0, 0.3)); /* Make tiles pop out */
+}
+
+.puzzle-tile:not(.empty-tile):hover {
+  cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: var(--puzzle-tile-hover-shadow, 0 6px 10px rgba(0, 0, 0, 0.4));
+  border-color: var(--puzzle-tile-hover-border-color, #fff);
 }
 
 .empty-tile {
   background-color: transparent; 
   border: none;
   cursor: default;
+  box-shadow: var(--puzzle-empty-tile-shadow, inset 2px 2px 5px rgba(0, 0, 0, 0.5)); /* Make it look like a hole */
 }
 
 .reset {
