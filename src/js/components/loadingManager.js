@@ -1,5 +1,6 @@
 import { initializeBoard, initializeSolvedBoard, checkWinCondition } from '../utils/boardUtils.js';
 import { addAllClickListeners } from './interactionManager.js';
+import { isWinTestMode } from '../utils/urlUtils.js';
 import { fetchState } from '../services/globalDataManager.js';
 
 /**
@@ -10,12 +11,8 @@ export function startGame() {
   console.log('Starting game...');
   // Future: Show a loading spinner or welcome screen here.
 
-  // Check for a 'test=win' URL parameter to easily test the win condition.
-  const urlParams = new URLSearchParams(window.location.search);
-  const shouldTestWinCondition = urlParams.get('test') === 'win';
-
-  if (shouldTestWinCondition) {
-    // Initialize the board in a solved state for testing.
+  // Check if we are in test mode to initialize the appropriate board state.
+  if (isWinTestMode()) {
     const state = fetchState();
     initializeSolvedBoard({ contentType: state.contentType });
 

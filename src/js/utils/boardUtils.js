@@ -3,6 +3,7 @@ import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.j
 import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
 import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
+import { isWinTestMode } from './urlUtils.js';
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -71,6 +72,14 @@ function _removeEmptyTile() {
   } else {
     console.error('Empty tile not found.');
   }
+}
+
+function _removeTileContent() {
+  console.info('Removing tile content...');
+  const allTiles = SELECTORS.allTiles();
+  allTiles.forEach((tile) => {
+    tile.innerHTML = '';
+  });
 }
 
 /**
@@ -156,10 +165,17 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = 
 }
 
 export function resetBoard() {
-  console.info('Resetting board...');
+  console.warn('Resetting board...');
   const state = fetchState();
   _removeEmptyTile();
-  initializeBoard(state);
+  _removeTileContent();
+
+  // Check if we are in test mode to initialize the appropriate board state.
+  if (isWinTestMode()) {
+    initializeSolvedBoard(state);
+  } else {
+    initializeBoard(state);
+  }
 }
 
 /**

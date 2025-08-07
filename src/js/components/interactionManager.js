@@ -64,6 +64,7 @@ function _addWinAlertCloseListener() {
 
   btnCloseAlert.addEventListener('click', () => {
     hideWinningScreen();
+    resetBoard();
   });
 }
 
@@ -75,7 +76,6 @@ function _addResetButtonListener() {
   }
 
   btnReset.addEventListener('click', () => {
-    console.warn('Resetting game...');
     resetBoard();
   });
 }
