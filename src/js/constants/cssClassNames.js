@@ -13,4 +13,5 @@ export const CSS_CLASSES = {
   EMPTY_TILE: 'empty-tile',
   WINNING_ALERT: "winning-alert",
   BTN_CLOSE_WIN_ALERT: 'btn-close-win-alert',
+  BTN_RESET: 'btn-reset',
 };

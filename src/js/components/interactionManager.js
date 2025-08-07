@@ -1,6 +1,6 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
-import { isTileMovable, checkWinCondition } from '../utils/boardUtils.js';
+import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
 import { showWinningScreen, hideWinningScreen } from '../utils/domHelpers.js';
 import { fetchContentType } from '../services/globalDataManager.js';
@@ -67,8 +67,21 @@ function _addWinAlertCloseListener() {
   });
 }
 
+function _addResetButtonListener() {
+  const btnReset = SELECTORS.btnReset();
+  if (!btnReset) {
+    console.error('Reset button not found.');
+    return;
+  }
+
+  btnReset.addEventListener('click', () => {
+    console.warn('Resetting game...');
+    resetBoard();
+  });
+}
 
 export function addAllClickListeners() {
   _addTileClickListeners();
+  _addResetButtonListener()
   _addWinAlertCloseListener();
 }

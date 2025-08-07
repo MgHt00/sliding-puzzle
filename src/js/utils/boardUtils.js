@@ -63,6 +63,16 @@ function _addEmptyTile(tiles) {
   tiles[randomIndex].classList.add(CSS_CLASSES.EMPTY_TILE);
 }
 
+function _removeEmptyTile() {
+  console.info('Removing empty tile...');
+  const emptyTile = SELECTORS.emptyTile();
+  if (emptyTile) {
+    emptyTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
+  } else {
+    console.error('Empty tile not found.');
+  }
+}
+
 /**
  * Gets the row and column of a tile based on its index in the DOM.
  * This has been refactored to read from data attributes for better performance.
@@ -143,6 +153,13 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = 
     default:
       console.error(`Unknown content type: ${contentType}`);
   }
+}
+
+export function resetBoard() {
+  console.info('Resetting board...');
+  const state = fetchState();
+  _removeEmptyTile();
+  initializeBoard(state);
 }
 
 /**
