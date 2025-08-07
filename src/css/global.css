@@ -3,13 +3,14 @@
  * `src/js/constants/cssClassNames.js` as well. */
 :root {
   --body-background: rgb(27, 34, 53);
-  --overlay-background: rgba(0, 0, 0, 0.5);
-  --loading-spinner-font-size: 24px;
+  --body-grid-gap: 10px;
 
-  --theme-night-darker: #222831;
-  --theme-night-dark: #393E46;
-  --theme-night-light: #948979;
-  --theme-night-ascent: #DFD0B8;
+  --setting-heading-font-size: 30px;
+
+  --color-night-darker: #222831;
+  --color-night-dark: #393E46;
+  --color-night-light: #948979;
+  --color-night-ascent: #DFD0B8;
 
   --font-rock: "Rock 3D", system-ui;
   --font-roboto: "Roboto", sans-serif;
@@ -26,11 +27,17 @@
   --puzzle-tile-font-size: 55px;
   --puzzle-tile-font-weight: 400;
   --puzzle-tile-text-shadow: 3px 3px 2px #444444;
-  --puzzle-tile-border: 1px solid var(--theme-night-ascent);
+  --puzzle-tile-border: 1px solid var(--color-night-ascent);
   --puzzle-tile-transition: transform 0.3s ease-in-out;
 
-  --alert-text-ascent: #ffffff;
+  --reset-btn-font-size: 25px;
 
+  --overlay-background: rgba(0, 0, 0, 0.5);
+  --loading-spinner-font-size: 24px;
+
+  --theme-background-color: var(--color-night-darker, lightslategray);
+  --theme-decorative-font-family: var(--font-knewave, system-ui);
+  --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
 }
 
 * {
@@ -42,9 +49,19 @@
 body {
   display: grid;
   place-content: center;
+  gap: var(--body-grid-gap, 10px);
   height: 100vh;
-  background: var(--theme-night-darker);
-  color: var(--theme-night-ascent, #ffffff);
+  background: var(--theme-background-color);
+  color: var(--theme-decorative-font-color);
+}
+
+.offcanvas {
+
+  & .offcanvas-title {
+    font-family: var(--theme-decorative-font-family);
+    color: var(--theme-decorative-font-color);
+    font-size: var(--setting-heading-font-size, 30px);
+  }
 }
 
 .puzzle-board {
@@ -52,10 +69,9 @@ body {
   grid-template-columns: repeat(var(--puzzle-board-columns, 3), 1fr);
   grid-template-rows: repeat(var(--puzzle-board-rows, 3), 1fr);
   gap: var(--puzzle-board-gap, 5px);
-  width: var(--puzzle-board-width, min(80vw, 300px)); /* Responsive width, max 500px */
+  width: var(--puzzle-board-width, min(80vw, 300px)); /* Responsive width, max 300px */
   aspect-ratio: 1 / 1; /* Keep it square */
-
-  background: var(--theme-night-dark, lightslategray);
+  background: var(--theme-background-color);
   border: var(--puzzle-board-border, 2px solid #333);
 }
 
@@ -66,11 +82,11 @@ body {
   width: 100%;
   height: 100%;
 
-  font-family: var(--font-knewave, system-ui);
+  font-family: var(--theme-decorative-font-family);
   font-size: var(--puzzle-tile-font-size, 55px);
   font-weight: var(--puzzle-tile-font-weight, 400);
   text-shadow: var(--puzzle-tile-text-shadow, 3px 3px 2px #444444);
-  background: var(--theme-night-dark);
+  background: var(--theme-background-color);
 
   border: var(--puzzle-tile-border, 1px solid #adadad);
   transition: var(--puzzle-tile-transition, transform 0.3s ease-in-out); /* For sliding animation */
@@ -78,10 +94,19 @@ body {
 }
 
 .empty-tile {
-  background-color: transparent; /* or a distinct color for the empty spot */
-  /*border: 1px dashed #aaa;*/
+  background-color: transparent; 
   border: none;
   cursor: default;
+}
+
+.reset {
+  
+  & .btn {
+    font-family: var(--theme-decorative-font-family);
+    font-size: var(--reset-btn-font-size, 25px);
+    color: var(--theme-decorative-font-color);
+    border-color: var(--theme-decorative-font-color);
+  }
 }
 
 .overlay {
@@ -106,8 +131,4 @@ body {
 
 .loading-spinner {
   font-size: var(--loading-spinner-font-size, 24px);
-}
-
-.winning-alert {
-  color: var(--alert-text-ascent, #ffffff);
 }
