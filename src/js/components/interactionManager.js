@@ -82,7 +82,6 @@ function _addResetButtonListener() {
       showConfirmationScreen();
       return;
     }
-    hideConfirmationScreen()
     resetBoard();
   });
 }
@@ -112,9 +111,31 @@ function _addConfirmationConfirmListener() {
   });
 }
 
+function _addGlobalKeyPressListener() {
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+      return;
+    }
+
+    const confirmationAlert = SELECTORS.confirmationAlert();
+    if (!confirmationAlert.classList.contains(CSS_CLASSES.D_NONE)) {
+      hideConfirmationScreen();
+      SELECTORS.btnReset()?.blur();
+      return;
+    }
+
+    const winningAlert = SELECTORS.winningAlert();
+    if (!winningAlert.classList.contains(CSS_CLASSES.D_NONE)) {
+      hideWinningScreen();
+      resetBoard();
+    }
+  });
+}
+
 export function addAllClickListeners() {
   _addTileClickListeners();
-  _addResetButtonListener()
+  _addGlobalKeyPressListener();
+  _addResetButtonListener();
   _addWinAlertCloseListener();
   _addConfirmationCancelListener();
   _addConfirmationConfirmListener();
