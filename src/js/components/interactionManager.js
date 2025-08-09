@@ -2,10 +2,26 @@ import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen } from '../utils/domHelpers.js';
+import { showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen, isElementVisible } from '../utils/domHelpers.js';
 import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
+
+/**
+ * A helper function to add an event listener to an element, with a built-in check for the element's existence.
+ * @param {function(): Element|null} selectorFn - A function that returns the DOM element.
+ * @param {string} eventName - The name of the event to listen for (e.g., 'click').
+ * @param {function(Event): void} eventHandler - The function to execute when the event is triggered.
+ * @param {string} errorMessage - The error message to log if the element is not found.
+ */
+function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
+  const element = selectorFn();
+  if (element) {
+    element.addEventListener(eventName, eventHandler);
+  } else {
+    console.error(errorMessage);
+  }
+}
 
 /**
  * Handles the click event on a puzzle tile.
@@ -42,73 +58,42 @@ function _handleTileClick(event) {
  * This is more efficient than adding a listener to every single tile.
  */
 function _addTileClickListeners() {
-  console.info('Adding tile click listeners...');
-  const board = SELECTORS.board();
-  if (!board) {
-    console.error('Puzzle board not found. Cannot add listeners.');
-    return;
-  }
-
-  board.addEventListener('click', (event) => {
+  _addEventListener(SELECTORS.board, 'click', (event) => {
     // Ensure the clicked element is a tile and not the empty space
     if (event.target.classList.contains(CSS_CLASSES.TILE) && !event.target.classList.contains(CSS_CLASSES.EMPTY_TILE)) {
       _handleTileClick(event);
     }
-  });
+  }, 'Puzzle board not found. Cannot add listeners.');
 }
 
 function _addWinAlertCloseListener() {
-  const btnCloseAlert = SELECTORS.btnCloseWinAlert();
-  if (!btnCloseAlert) {
-    console.error('Winning alert close button not found.');
-    return;
-  }
-
-  btnCloseAlert.addEventListener('click', () => {
+  _addEventListener(SELECTORS.btnCloseWinAlert, 'click', () => {
     hideWinningScreen();
     resetBoard();
-  });
+  }, 'Winning alert close button not found.');
 }
 
 function _addResetButtonListener() {
-  const btnReset = SELECTORS.btnReset();
-  if (!btnReset) {
-    console.error('Reset button not found.');
-    return;
-  }
-
-  btnReset.addEventListener('click', () => {
+  _addEventListener(SELECTORS.btnReset, 'click', () => {
     if (fetchGameInProgress()) {
       showConfirmationScreen();
       return;
     }
     resetBoard();
-  });
+  }, 'Reset button not found.');
 }
 
 function _addConfirmationCancelListener() {
-  const btnCancel = SELECTORS.btnAlertCancel();
-  if (!btnCancel) {
-    console.error('Confirmation alert cancel button not found.');
-    return;
-  }
-
-  btnCancel.addEventListener('click', () => {
+  _addEventListener(SELECTORS.btnAlertCancel, 'click', () => {
     hideConfirmationScreen();
-  });
+  }, 'Confirmation alert cancel button not found.');
 }
 
 function _addConfirmationConfirmListener() {
-  const btnConfirm = SELECTORS.btnAlertConfirm();
-  if (!btnConfirm) {
-    console.error('Confirmation alert confirm button not found.');
-    return;
-  }
-
-  btnConfirm.addEventListener('click', () => {
+  _addEventListener(SELECTORS.btnAlertConfirm, 'click', () => {
     hideConfirmationScreen();
     resetBoard();
-  });
+  }, 'Confirmation alert confirm button not found.');
 }
 
 function _addGlobalKeyPressListener() {
@@ -117,15 +102,13 @@ function _addGlobalKeyPressListener() {
       return;
     }
 
-    const confirmationAlert = SELECTORS.confirmationAlert();
-    if (!confirmationAlert.classList.contains(CSS_CLASSES.D_NONE)) {
+    if (isElementVisible(SELECTORS.confirmationAlert())) {
       hideConfirmationScreen();
       SELECTORS.btnReset()?.blur();
       return;
     }
 
-    const winningAlert = SELECTORS.winningAlert();
-    if (!winningAlert.classList.contains(CSS_CLASSES.D_NONE)) {
+    if (isElementVisible(SELECTORS.winningAlert())) {
       hideWinningScreen();
       resetBoard();
     }

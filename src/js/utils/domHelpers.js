@@ -1,6 +1,15 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
 
+/**
+ * Checks if an element is visible by checking for the absence of the 'd-none' class.
+ * @param {Element|null} element - The element to check.
+ * @returns {boolean} - True if the element is visible.
+ */
+export function isElementVisible(element) {
+  return element ? !element.classList.contains(CSS_CLASSES.D_NONE) : false;
+}
+
 function _showOverlay() {
   const overlay = SELECTORS.overlay();
   if (overlay) {
