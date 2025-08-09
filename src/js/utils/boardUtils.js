@@ -1,7 +1,7 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
 import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
-import { fetchState } from '../services/globalDataManager.js';
+import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 

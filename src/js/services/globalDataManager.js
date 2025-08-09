@@ -24,3 +24,11 @@ export function setContentType(contentType) {
 export function setRandom(random) {
   globals.appState[STATE_KEYS.RANDOM] = random;
 }
+
+export function setGameInProgress(gameInProgress) {
+  globals.appState[STATE_KEYS.GAME_IN_PROGRESS] = gameInProgress;
+}
+
+export function fetchGameInProgress() {
+  return globals.appState[STATE_KEYS.GAME_IN_PROGRESS];
+}

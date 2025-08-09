@@ -4,13 +4,16 @@ export const STATE_KEYS = {
   GAME_IN_PROGRESS: 'gameInProgress',
 }
 
-export const CONTENT_TYPES = {
+export const STATE_VALUES = {
   RANDOM: true,
+  GAME_IN_PROGRESS: false,
+}
+
+export const CONTENT_TYPES = {
   DEFAULT: 'arabic-numbers',
   ARABIC_NUMBERS: 'arabic-numbers',
   // JAPANESE_NUMBERS: 'japanese-numbers', // for future use
   // PHOTOS: 'photos', // for future use
-  GAME_IN_PROGRESS: false,
 }
 
 export const TEXT = {

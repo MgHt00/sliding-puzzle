@@ -3,7 +3,7 @@ import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
 import { showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen } from '../utils/domHelpers.js';
-import { fetchContentType } from '../services/globalDataManager.js';
+import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
 
@@ -23,6 +23,7 @@ function _handleTileClick(event) {
 
   if (isTileMovable(clickedTile, emptyTile)) {
     console.log('Tile is movable, swapping...');
+    setGameInProgress(true);
     isAnimating = true;
     swapTiles({ sourceTile: clickedTile, targetTile: emptyTile }).then(() => {
       isAnimating = false;
@@ -30,6 +31,7 @@ function _handleTileClick(event) {
       if (checkWinCondition(fetchContentType())) {
         //console.info("✅ SUCCESS: Player has won!")
         showWinningScreen();
+        setGameInProgress(false);
       }
     });
   }
@@ -76,6 +78,11 @@ function _addResetButtonListener() {
   }
 
   btnReset.addEventListener('click', () => {
+    if (fetchGameInProgress()) {
+      showConfirmationScreen();
+      return;
+    }
+    hideConfirmationScreen()
     resetBoard();
   });
 }
@@ -99,10 +106,10 @@ function _addConfirmationConfirmListener() {
     return;
   }
 
-  /*btnConfirm.addEventListener('click', () => {
+  btnConfirm.addEventListener('click', () => {
     hideConfirmationScreen();
     resetBoard();
-  });*/
+  });
 }
 
 export function addAllClickListeners() {
@@ -110,4 +117,5 @@ export function addAllClickListeners() {
   _addResetButtonListener()
   _addWinAlertCloseListener();
   _addConfirmationCancelListener();
+  _addConfirmationConfirmListener();
 }

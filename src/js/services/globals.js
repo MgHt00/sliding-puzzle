@@ -1,4 +1,4 @@
-import { STATE_KEYS, CONTENT_TYPES } from "../constants/appConstants.js";
+import { STATE_KEYS, STATE_VALUES, CONTENT_TYPES } from "../constants/appConstants.js";
 
 /**
  * Defines the default state of the application.
@@ -6,8 +6,8 @@ import { STATE_KEYS, CONTENT_TYPES } from "../constants/appConstants.js";
  */
 const defaults = {
   [STATE_KEYS.CONTENT_TYPE]: CONTENT_TYPES.DEFAULT,
-  [STATE_KEYS.RANDOM]: CONTENT_TYPES.RANDOM,
-  [STATE_KEYS.GAME_IN_PROGRESS]: CONTENT_TYPES.GAME_IN_PROGRESS,
+  [STATE_KEYS.RANDOM]: STATE_VALUES.RANDOM,
+  [STATE_KEYS.GAME_IN_PROGRESS]: STATE_VALUES.GAME_IN_PROGRESS,
 };
 
 /**
