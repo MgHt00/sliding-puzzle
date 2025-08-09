@@ -43,6 +43,20 @@ function _hideWinningAlert() {
   }
 }
 
+function _showConfirmationAlert() {
+  const confirmationAlert = SELECTORS.confirmationAlert();
+  if (confirmationAlert) {
+    confirmationAlert.classList.remove(CSS_CLASSES.D_NONE);
+  }
+}
+
+function _hideConfirmationAlert() {
+  const confirmationAlert = SELECTORS.confirmationAlert();
+  if (confirmationAlert) {
+    confirmationAlert.classList.add(CSS_CLASSES.D_NONE);
+  }
+}
+
 export function showLoadingScreen() {
   _showOverlay();
   _showLoadingSpinner();
@@ -60,5 +74,15 @@ export function showWinningScreen() {
 
 export function hideWinningScreen() {
   _hideWinningAlert();
+  _hideOverlay();
+}
+
+export function showConfirmationScreen() {
+  _showOverlay();
+  _showConfirmationAlert();
+}
+
+export function hideConfirmationScreen() {
+  _hideConfirmationAlert();
   _hideOverlay();
 }

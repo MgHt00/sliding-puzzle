@@ -14,4 +14,7 @@ export const CSS_CLASSES = {
   WINNING_ALERT: "winning-alert",
   BTN_CLOSE_WIN_ALERT: 'btn-close-win-alert',
   BTN_RESET: 'btn-reset',
+  CONFIRMATION_ALERT: 'confirmation-alert',
+  CONFIRMATION_ALERT_CANCEL: 'confirmation-alert-cancel',
+  CONFIRMATION_ALERT_CONFIRM: 'confirmation-alert-confirm',
 };

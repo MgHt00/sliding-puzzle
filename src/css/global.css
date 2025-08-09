@@ -40,9 +40,14 @@
   --overlay-background: rgba(0, 0, 0, 0.5);
   --loading-spinner-font-size: 24px;
 
+  --confirmation-alert-box-shadow: rgba(255, 255, 255, 0.16) 0px 10px 36px 0px,
+                                  rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  --confirmation-btn-margin: 10px 9px 0 0;
+
   --theme-background-color: var(--color-night-darker, lightslategray);
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
+  --theme-normal-font-family: var(--font-roboto, sans-serif);
 }
 
 * {
@@ -143,7 +148,8 @@ body {
 }
 
 .loading-spinner,
-.alert-message {
+.alert-message,
+.confirmation-alert {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -154,4 +160,30 @@ body {
 
 .loading-spinner {
   font-size: var(--loading-spinner-font-size, 24px);
+}
+
+.confirmation-alert {
+  box-shadow: var(--confirmation-alert-box-shadow);
+}
+
+.confirmation-alert .alert {
+  color: var(--theme-decorative-font-color);
+  border: solid 3px var(--theme-decorative-font-color);
+  background: var(--theme-background-color);
+  
+  & h5 {
+    font-family: var(--theme-decorative-font-family);
+    font-size: var(--reset-btn-font-size, 25px);
+  }
+
+  & .btn {
+    color: var(--theme-decorative-font-color);
+    border-color: var(--theme-decorative-font-color);
+    margin: var(--confirmation-btn-margin);
+
+    &:hover {
+      background-color: var(--theme-decorative-font-color);
+      color: var(--theme-background-color);
+    }
+  }
 }

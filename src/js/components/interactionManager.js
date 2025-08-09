@@ -2,7 +2,7 @@ import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showWinningScreen, hideWinningScreen } from '../utils/domHelpers.js';
+import { showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen } from '../utils/domHelpers.js';
 import { fetchContentType } from '../services/globalDataManager.js';
 
 let isAnimating = false;
@@ -80,8 +80,34 @@ function _addResetButtonListener() {
   });
 }
 
+function _addConfirmationCancelListener() {
+  const btnCancel = SELECTORS.btnAlertCancel();
+  if (!btnCancel) {
+    console.error('Confirmation alert cancel button not found.');
+    return;
+  }
+
+  btnCancel.addEventListener('click', () => {
+    hideConfirmationScreen();
+  });
+}
+
+function _addConfirmationConfirmListener() {
+  const btnConfirm = SELECTORS.btnAlertConfirm();
+  if (!btnConfirm) {
+    console.error('Confirmation alert confirm button not found.');
+    return;
+  }
+
+  /*btnConfirm.addEventListener('click', () => {
+    hideConfirmationScreen();
+    resetBoard();
+  });*/
+}
+
 export function addAllClickListeners() {
   _addTileClickListeners();
   _addResetButtonListener()
   _addWinAlertCloseListener();
+  _addConfirmationCancelListener();
 }

@@ -8,7 +8,11 @@ export const SELECTORS = {
   overlay: () => document.querySelector(`.${CSS_CLASSES.OVERLAY}`),
   loadingSpinner: () => document.querySelector(`.${CSS_CLASSES.LOADING_SPINNER}`),
   winningAlert: () => document.querySelector(`.${CSS_CLASSES.WINNING_ALERT}`),
+  confirmationAlert: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT}`),
   
   btnCloseWinAlert: () => document.querySelector(`.${CSS_CLASSES.BTN_CLOSE_WIN_ALERT}`),
   btnReset: () => document.querySelector(`.${CSS_CLASSES.BTN_RESET}`),
+
+  btnAlertConfirm: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CONFIRM}`),
+  btnAlertCancel: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CANCEL}`),
 };
