@@ -12,6 +12,12 @@
   --color-night-light: #948979;
   --color-night-ascent: #DFD0B8;
 
+  --color-warning-darkest: #ff0f0f;
+  --color-warning-darker: #ff4545;
+  --color-warning-mid: #ff8383;
+  --color-warning-lighter: #ffc2c2;
+  --color-warning-lightest: #fff1f1;
+
   --font-rock: "Rock 3D", system-ui;
   --font-roboto: "Roboto", sans-serif;
   --font-yomogi: "Yomogi", cursive;
@@ -44,10 +50,14 @@
                                   rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   --confirmation-btn-margin: 10px 9px 0 0;
 
+  --confirmation-alert-border: solid 3px var(--theme-warning-color);
+  --winning-alert-boder: solid 3px var(--theme-decorative-font-color);
+
   --theme-background-color: var(--color-night-darker, lightslategray);
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
   --theme-normal-font-family: var(--font-roboto, sans-serif);
+  --theme-warning-color: var(var(--color-warning-darkest));
 }
 
 * {
@@ -148,7 +158,7 @@ body {
 }
 
 .loading-spinner,
-.alert-message,
+.winning-alert,
 .confirmation-alert {
   position: fixed;
   top: 50%;
@@ -162,11 +172,22 @@ body {
   font-size: var(--loading-spinner-font-size, 24px);
 }
 
+.winning-alert,
 .confirmation-alert {
   box-shadow: var(--confirmation-alert-box-shadow);
 }
 
-.confirmation-alert .alert {
+/*.confirmation-alert {
+  border: var(--confirmation-alert-border);
+}
+
+.winning-alert {
+  border: var(--winning-alert-boder);
+}*/
+
+/*TO DO: Change confirmation alert border color*/
+
+:is(.winning-alert, .confirmation-alert) .alert {
   color: var(--theme-decorative-font-color);
   border: solid 3px var(--theme-decorative-font-color);
   background: var(--theme-background-color);

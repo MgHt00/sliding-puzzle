@@ -54,12 +54,18 @@
       <span class="invisible">Loading...</span>
     </div>
   </section>
-  <section class="alert-message">
-    <div class="winning-alert alert alert-light alert-dismissible fade show d-none" role="alert">
-      <div><strong>Congratulations!</strong> You have won!</div>
-      <button type="button" class="btn-close btn-close-win-alert" data-bs-dismiss="alert" aria-label="Close"></button>
+  <section class="winning-alert d-none">
+    <div class="alert alert-primary d-flex flex-column" role="alert">
+      <div>
+        <h5 class="confirmation-alert-heading">Congratulations!</h5>
+        <span>You have won the game!</span>
+      </div>
+      <div class="confirmation-alert-buttons d-flex justify-content-center">
+        <button type="button" class="btn-close-win-alert btn btn-outline-light btn-sm">OK</button>
+      </div>
     </div>
   </section>
+
   <section class="confirmation-alert d-none">
     <div class="alert alert-primary d-flex flex-column" role="alert">
       <div>
@@ -67,9 +73,9 @@
         <span>This will reset the game.</span>
       </div>
       <div class="confirmation-alert-buttons d-flex justify-content-center">
-        <button type="button" class="confirmation-alert-confirm btn btn-outline-light btn-sm">OK</button>
-        <button type="button" class="confirmation-alert-cancel btn btn-outline-light btn-sm">Cancel</button>
-      </div>
+    <div class="confirmation-alert-buttons d-flex justify-content-center">
+      <button type="button" class="confirmation-alert-confirm btn btn-outline-light btn-sm">OK</button>
+      <button type="button" class="confirmation-alert-cancel btn btn-outline-light btn-sm">Cancel</button>
     </div>
   </section>
   <script type="module" src="src/js/main.js"></script>
