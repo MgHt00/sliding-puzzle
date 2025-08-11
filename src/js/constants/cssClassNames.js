@@ -17,4 +17,8 @@ export const CSS_CLASSES = {
   CONFIRMATION_ALERT: 'confirmation-alert',
   CONFIRMATION_ALERT_CANCEL: 'confirmation-alert-cancel',
   CONFIRMATION_ALERT_CONFIRM: 'confirmation-alert-confirm',
+
+  WRAPPER_ALERT: 'alert-wrapper',
+  BTN_ALERT_CONFIRM: 'alert-confirm-btn',
+  BTN_ALERT_CANCEL: 'alert-cancel-btn',
 };

@@ -10,60 +10,70 @@ export function isElementVisible(element) {
   return element ? !element.classList.contains(CSS_CLASSES.D_NONE) : false;
 }
 
+function _showElement(element) {
+  if (element) {
+    element.classList.remove(CSS_CLASSES.D_NONE);
+  } else {
+    console.error('Element not found for showing.');
+  }
+}
+
+function _hideElement(element) {
+  if (element) {
+    element.classList.add(CSS_CLASSES.D_NONE);
+  } else {
+    console.error('Element not found for hiding.');
+  }
+}
+
 function _showOverlay() {
   const overlay = SELECTORS.overlay();
-  if (overlay) {
-    overlay.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(overlay);
 }
 
 function _hideOverlay() {
   const overlay = SELECTORS.overlay();
-  if (overlay) {
-    overlay.classList.add(CSS_CLASSES.D_NONE);
-  }
+  _hideElement(overlay);
 }
 
 function _showLoadingSpinner() {
   const loadingSpinner = SELECTORS.loadingSpinner();
-  if (loadingSpinner) {
-    loadingSpinner.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(loadingSpinner);
 }
 
 function _hideLoadingSpinner() {
   const loadingSpinner = SELECTORS.loadingSpinner();
-  if (loadingSpinner) {
-    loadingSpinner.classList.add(CSS_CLASSES.D_NONE);
-  }
+  _hideElement(loadingSpinner);
 }
 
 function _showWinningAlert() {
   const winningAlert = SELECTORS.winningAlert();
-  if (winningAlert) {
-    winningAlert.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(winningAlert);
 }
 
 function _hideWinningAlert() {
   const winningAlert = SELECTORS.winningAlert();
-  if (winningAlert) {
-    winningAlert.classList.add(CSS_CLASSES.D_NONE);
-  }
+  _hideElement(winningAlert);
 }
 
 function _showConfirmationAlert() {
   const confirmationAlert = SELECTORS.confirmationAlert();
-  if (confirmationAlert) {
-    confirmationAlert.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(confirmationAlert);
 }
 
 function _hideConfirmationAlert() {
   const confirmationAlert = SELECTORS.confirmationAlert();
-  if (confirmationAlert) {
-    confirmationAlert.classList.add(CSS_CLASSES.D_NONE);
-  }
+  _hideElement(confirmationAlert);
+}
+
+function _showAlertWrapper() {
+  const alertWrapper = SELECTORS.alertWrapper();
+  _showElement(alertWrapper);
+}
+
+function _hideAlertWrapper() {
+  const alertWrapper = SELECTORS.alertWrapper();
+  _hideElement(alertWrapper);
 }
 
 export function showLoadingScreen() {
@@ -94,4 +104,9 @@ export function showConfirmationScreen() {
 export function hideConfirmationScreen() {
   _hideConfirmationAlert();
   _hideOverlay();
+}
+
+export function showAlert() {
+  _showOverlay();
+  _showAlertWrapper();
 }

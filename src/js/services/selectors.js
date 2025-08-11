@@ -15,4 +15,7 @@ export const SELECTORS = {
 
   btnAlertConfirm: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CONFIRM}`),
   btnAlertCancel: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CANCEL}`),
+
+  alertWrapper: () => document.querySelector(`.${CSS_CLASSES.WRAPPER_ALERT}`),
+
 };
