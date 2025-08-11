@@ -6,12 +6,11 @@ import { showLoadingScreen, hideLoadingScreen, showWinningScreen, showConfirmati
  * Main function to initialize the puzzle.
  */
 function init() {
-  /*showLoadingScreen();
+  showLoadingScreen();
   setTimeout(() => {
     startGame();
     hideLoadingScreen();
-  }, 0);*/
-  showAlert();
+  }, 0);
 }
 
 init();

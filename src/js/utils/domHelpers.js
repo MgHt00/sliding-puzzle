@@ -1,5 +1,6 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
+import { ALERT } from "../constants/appConstants.js";
 
 /**
  * Checks if an element is visible by checking for the absence of the 'd-none' class.
@@ -66,13 +67,18 @@ function _hideConfirmationAlert() {
   _hideElement(confirmationAlert);
 }
 
+const _classMap = {
+  warning: CSS_CLASSES.WARNING,
+};
+
 function _resetAlertBox() {
   const alertWrapper = SELECTORS.alertWrapper();  
   const alertHeading = SELECTORS.alertHeading();
   const alertText = SELECTORS.alertText();
   const alertCancelBtn = SELECTORS.alertCancelBtn();
 
-  alertWrapper.classList.remove(CSS_CLASSES.ERROR);
+  // To ensure a clean state, remove any alert-type-specific classes.
+  Object.values(_classMap).forEach(className => alertWrapper.classList.remove(className));
   
   alertHeading.innerHTML = '';
   alertText.innerHTML = '';
@@ -93,16 +99,11 @@ function _setAlertContent(heading, text, confirmText, cancelText) {
   alertCancelBtn.innerHTML = cancelText;
 }
 
-function _changeAlertBorderColor({type = 'default'} = {}) {
+function _setAlertBorderColor(alertType) {
   const alertWrapper = SELECTORS.alertWrapper();
-
-  switch (type) {
-    case 'error':
-      alertWrapper.classList.add(CSS_CLASSES.ERROR);
-      break;
-    
-    default:
-      break;
+  const classToAdd = _classMap[alertType];
+  if (alertWrapper && classToAdd) {
+    alertWrapper.classList.add(classToAdd);
   }
 }
 
@@ -150,10 +151,44 @@ export function hideConfirmationScreen() {
   _hideConfirmationAlert();
   _hideOverlay();
 }
+const alertContentMap = {
+  won: {
+    heading: ALERT.WON_HEADER,
+    text: ALERT.WON_TEXT,
+    includeCancel: false,
+    confirmText: ALERT.BTN_CONFIRM,
+    cancelText: '',
+    alertType: ALERT.TYPE_DEFAULT,
+  },
 
-export function showAlert({heading = '', text = '', includeCancel = true, confirmText = 'OK', cancelText = 'Cancel', alertType = 'default'} = {}) {
+  warn: {
+    heading: ALERT.WARN_HEADER,
+    text: ALERT.WARN_TEXT,
+    includeCancel: true,
+    confirmText: ALERT.BTN_CONFIRM,
+    cancelText: ALERT.BTN_CANCEL,
+    alertType: ALERT.TYPE_WARNING,
+  }
+}
+
+export function showAlert(type) {
+  if (!type) {
+    console.error('No alert type provided.');
+    return;
+  }
+
+  const config = alertContentMap[type];
+  if (!config) {
+    console.error(`Unknown alert type: ${type}`);
+    return;
+  }
+
+  const { heading, text, includeCancel, confirmText, cancelText, alertType } = config;
+
+  _resetAlertBox();
   _showOverlay();
   _setAlertContent(heading, text, confirmText, cancelText);
+  _setAlertBorderColor(alertType);
   if (!includeCancel) {
     _hideAlertCancelBtn();
   }

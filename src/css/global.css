@@ -53,7 +53,7 @@
   --confirmation-alert-border: solid 3px var(--theme-warning-color);
   --winning-alert-boder: solid 3px var(--theme-decorative-font-color);
 
-  --alert-boder: solid 3px var(--theme-decorative-font-color);
+  --alert-border: solid 3px var(--theme-decorative-font-color);
   --alert-box-shadow: rgba(255, 255, 255, 0.16) 0px 10px 36px 0px,
                                   rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   --alert-btn-margin: 18px 9px 0 0;
@@ -62,11 +62,11 @@
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
   --theme-normal-font-family: var(--font-roboto, sans-serif);
-  --theme-warning-color: var(var(--color-warning-darkest));
+  --theme-warning-color: var(--color-warning-darkest);
 }
 
-.error {
-  --alert-boder: solid 3px var(--theme-warning-color);
+.warning {
+  --alert-border: solid 3px var(--theme-warning-color);
 }
 
 * {
@@ -189,7 +189,7 @@ body {
 
 .alert-wrapper {
   color: var(--theme-decorative-font-color);
-  border: solid 3px var(--theme-decorative-font-color);
+  border: var(--alert-border);
   background: var(--theme-background-color);
   box-shadow: var(--alert-box-shadow);
 

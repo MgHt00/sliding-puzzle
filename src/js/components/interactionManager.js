@@ -1,8 +1,9 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CLASSES } from '../constants/cssClassNames.js';
+import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen, isElementVisible } from '../utils/domHelpers.js';
+import { showAlert, hideAlert, showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen, isElementVisible } from '../utils/domHelpers.js';
 import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
@@ -46,7 +47,7 @@ function _handleTileClick(event) {
       // After the animation, check if the player has won.
       if (checkWinCondition(fetchContentType())) {
         //console.info("✅ SUCCESS: Player has won!")
-        showWinningScreen();
+        showAlert(ALERT.TYPE_WON);
         setGameInProgress(false);
       }
     });
