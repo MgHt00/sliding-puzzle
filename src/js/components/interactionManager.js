@@ -7,6 +7,9 @@ import { showAlert, hideAlert, showWinningScreen, hideWinningScreen, showConfirm
 import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
+// To store references to the event handlers for easy removal.
+let _boundConfirmHandler = null;
+let _boundCancelHandler = null;
 
 /**
  * A helper function to add an event listener to an element, with a built-in check for the element's existence.
@@ -22,6 +25,20 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
   } else {
     console.error(errorMessage);
   }
+}
+
+function _setWinAlert() {
+  _boundConfirmHandler = () => {
+    hideAlert();
+    resetBoard();
+  };
+
+  const confirmBtn = SELECTORS.alertConfirmBtn();
+  confirmBtn.addEventListener('click', _boundConfirmHandler);
+
+  showAlert(ALERT.TYPE_WON);
+  setGameInProgress(false);
+
 }
 
 /**
@@ -47,8 +64,7 @@ function _handleTileClick(event) {
       // After the animation, check if the player has won.
       if (checkWinCondition(fetchContentType())) {
         //console.info("✅ SUCCESS: Player has won!")
-        showAlert(ALERT.TYPE_WON);
-        setGameInProgress(false);
+        _setWinAlert();
       }
     });
   }
@@ -100,6 +116,12 @@ function _addConfirmationConfirmListener() {
 function _addGlobalKeyPressListener() {
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {
+      return;
+    }
+
+    if (isElementVisible(SELECTORS.alertWrapper()) && !fetchGameInProgress()) {
+      hideAlert();
+      SELECTORS.btnReset()?.blur();
       return;
     }
 
