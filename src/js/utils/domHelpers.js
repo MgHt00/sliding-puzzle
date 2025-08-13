@@ -46,7 +46,7 @@ function _hideLoadingSpinner() {
   const loadingSpinner = SELECTORS.loadingSpinner();
   _hideElement(loadingSpinner);
 }
-
+/*
 function _showWinningAlert() {
   const winningAlert = SELECTORS.winningAlert();
   _showElement(winningAlert);
@@ -66,7 +66,7 @@ function _hideConfirmationAlert() {
   const confirmationAlert = SELECTORS.confirmationAlert();
   _hideElement(confirmationAlert);
 }
-
+*/
 const _classMap = {
   warning: CSS_CLASSES.WARNING,
 };
@@ -131,7 +131,7 @@ export function hideLoadingScreen() {
   _hideOverlay();
   _hideLoadingSpinner();
 }
-
+/*
 export function showWinningScreen() {
   _showOverlay();
   _showWinningAlert();
@@ -150,7 +150,7 @@ export function showConfirmationScreen() {
 export function hideConfirmationScreen() {
   _hideConfirmationAlert();
   _hideOverlay();
-}
+}*/
 const alertContentMap = {
   [ALERT.TYPE_WON]: {
     heading: ALERT.WON_HEADER,

@@ -1,6 +1,6 @@
 import '../lib/bootstrap.bundle.js';
 import { startGame } from './components/loadingManager.js'; // eslint-disable-line no-unused-vars
-import { showLoadingScreen, hideLoadingScreen, showWinningScreen, showConfirmationScreen, showAlert } from './utils/domHelpers.js'; // eslint-disable-line no-unused-vars
+import { showLoadingScreen, hideLoadingScreen } from './utils/domHelpers.js'; // eslint-disable-line no-unused-vars
 
 /**
  * Main function to initialize the puzzle.
