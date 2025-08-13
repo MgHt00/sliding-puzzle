@@ -1,0 +1,27 @@
+/* ==========================================================================
+   Bootstrap Overrides
+   ========================================================================== */
+
+/* Change the background and border color of checked checkboxes and radio buttons */
+.form-check-input:checked {
+  background-color: var(--theme-decorative-font-color);
+  border-color: var(--theme-decorative-font-color);
+}
+
+/* Change the checkmark color to be visible on the new background.
+ * The default is white, which is not visible on our light decorative color.
+ * We are changing it to the dark theme background color for contrast.
+ */
+.form-check-input[type="checkbox"]:checked {
+  background-image: var(--override-check-background);
+}
+
+/* Change the inner circle color for radio buttons */
+.form-check-input[type="radio"]:checked {
+  background-image: var(--override-radio-background);
+}
+
+/* Update the focus ring to match the theme */
+.form-check-input:focus {
+  box-shadow: var(--setting-form-check-shadow);
+}
