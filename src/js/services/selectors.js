@@ -17,6 +17,7 @@ export const SELECTORS = {
   alertCancelBtn: () => document.querySelector(`.${CSS_CLASSES.BTN_ALERT_CANCEL}`),
 
   settings: () => document.querySelector(`.${CSS_CLASSES.SETTINGS}`),
+  offcanvasPanel: () => document.querySelector(`.${CSS_CLASSES.OFFCANVAS_PANEL}`),
   settingContentType: () => document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}`),
   settingArabic: () => document.querySelector(`.${CSS_CLASSES.SETTING_ARABIC}`),
   settingJapanese: () => document.querySelector(`.${CSS_CLASSES.SETTING_JAPANESE}`),

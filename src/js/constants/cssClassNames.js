@@ -25,4 +25,5 @@ export const CSS_CLASSES = {
   CONTENT_ALERT_TEXT: 'alert-content',
   BTN_ALERT_CONFIRM: 'alert-confirm-btn',
   BTN_ALERT_CANCEL: 'alert-cancel-btn',
+  OFFCANVAS_PANEL: 'offcanvas-panel',
 };

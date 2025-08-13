@@ -61,6 +61,19 @@ function _setAndShowWinAlert() {
   showAlert(ALERT.TYPE_WON);
 }
 
+/**
+ * Closes the settings offcanvas panel using the Bootstrap JavaScript API.
+ */
+function _closeSettingsPanel() {
+  const settingsPanel = SELECTORS.offcanvasPanel();
+  if (!settingsPanel) {
+    console.error('Settings panel element not found.');
+    return;
+  }
+
+  const offcanvasInstance = bootstrap.Offcanvas.getInstance(settingsPanel);
+  offcanvasInstance?.hide();
+}
 
 function _setAndShowResetAlert(contentType = fetchContentType()) {
   _cleanupAlertHandlers(); // Ensure no old listeners are active
@@ -73,6 +86,7 @@ function _setAndShowResetAlert(contentType = fetchContentType()) {
     console.warn('Game board will reset with:', contentType);
     resetBoard();
     _hideAlert();
+
   };
 
   _boundCancelHandler = () => _hideAlert();
@@ -145,6 +159,7 @@ function _addSettingListeners() {
       // Only reset the board if the content type has actually changed.
       if (newContentType && newContentType !== currentContentType) {
         if (fetchGameInProgress()) {
+          _closeSettingsPanel();
           _setAndShowResetAlert(newContentType);
           return;
         }
@@ -152,6 +167,7 @@ function _addSettingListeners() {
         console.warn('Game is not in progress. Resetting board with', newContentType);
         setContentType(newContentType);
         resetBoard();
+        _closeSettingsPanel();
       }
     }
   });
