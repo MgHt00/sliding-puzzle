@@ -116,23 +116,18 @@ function _addGlobalKeyPressListener() {
       return;
     }
 
+    // For reset alert
+    if (isElementVisible(SELECTORS.alertWrapper()) && fetchGameInProgress()) {
+      hideAlert();
+      SELECTORS.btnReset()?.blur();
+      return;
+    }
+
+    // For winning alert
     if (isElementVisible(SELECTORS.alertWrapper()) && !fetchGameInProgress()) {
-      hideAlert();
+      _boundConfirmHandler(); // as _boundConfirmHandler is already set by the _setAndShowWinAlert, we just need to call the function here.
       SELECTORS.btnReset()?.blur();
       return;
-    }
-
-    if (isElementVisible(SELECTORS.confirmationAlert())) {
-      //hideConfirmationScreen();
-      hideAlert();
-      SELECTORS.btnReset()?.blur();
-      return;
-    }
-
-    if (isElementVisible(SELECTORS.winningAlert())) {
-      //hideWinningScreen();
-      hideAlert();
-      resetBoard();
     }
   });
 }
