@@ -148,10 +148,8 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
-function _addSettingListeners() {
-  _addEventListener(SELECTORS.settings, 'click', (event) => {
-    // Check if the clicked element is one of our radio buttons for content type
-    // by checking its 'name' attribute.
+function _addOffcanvasListeners() {
+  _addEventListener(SELECTORS.offcanvasPanel, 'click', (event) => {
     if (event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
       const newContentType = event.target.value;
       const currentContentType = fetchContentType();
@@ -199,5 +197,5 @@ export function addAllClickListeners() {
   _addTileClickListeners();
   _addGlobalKeyPressListener();
   _addResetButtonListener();
-  _addSettingListeners();
+  _addOffcanvasListeners();
 }

@@ -13,7 +13,7 @@ export const CSS_CLASSES = {
   EMPTY_TILE: 'empty-tile',
   WARNING: 'warning',
 
-  SETTINGS: 'settings', 
+  OFFCANVAS_PANEL: 'offcanvas-panel',
   SETTING_CONTENT_TYPE: 'content-type',
   SETTING_ARABIC: 'content-arabic-number',
   SETTING_JAPANESE: 'content-japanese-number',
@@ -25,5 +25,4 @@ export const CSS_CLASSES = {
   CONTENT_ALERT_TEXT: 'alert-content',
   BTN_ALERT_CONFIRM: 'alert-confirm-btn',
   BTN_ALERT_CANCEL: 'alert-cancel-btn',
-  OFFCANVAS_PANEL: 'offcanvas-panel',
 };
