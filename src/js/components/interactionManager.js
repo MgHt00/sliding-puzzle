@@ -4,7 +4,7 @@ import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
 import { showAlert, hideAlert as hideAlertFromDOM, isElementVisible } from '../utils/domHelpers.js';
-import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
+import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
 let _boundConfirmHandler = null;
@@ -131,6 +131,23 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
+function _addSettingListeners() {
+  _addEventListener(SELECTORS.settings, 'click', (event) => {
+    // Check if the clicked element is one of our radio buttons for content type
+    // by checking its 'name' attribute.
+    if (event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
+      const newContentType = event.target.value;
+      const currentContentType = fetchContentType();
+
+      // Only reset the board if the content type has actually changed.
+      /*if (newContentType && newContentType !== currentContentType) {
+        setContentType(newContentType);
+        resetBoard();
+      }*/
+    }
+  });
+}
+
 function _addGlobalKeyPressListener() {
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {
@@ -157,4 +174,5 @@ export function addAllClickListeners() {
   _addTileClickListeners();
   _addGlobalKeyPressListener();
   _addResetButtonListener();
+  _addSettingListeners();
 }
