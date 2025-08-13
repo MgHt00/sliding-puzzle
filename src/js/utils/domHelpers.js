@@ -152,7 +152,7 @@ export function hideConfirmationScreen() {
   _hideOverlay();
 }
 const alertContentMap = {
-  won: {
+  [ALERT.TYPE_WON]: {
     heading: ALERT.WON_HEADER,
     text: ALERT.WON_TEXT,
     includeCancel: false,
@@ -161,7 +161,7 @@ const alertContentMap = {
     alertType: ALERT.TYPE_DEFAULT,
   },
 
-  warn: {
+  [ALERT.TYPE_WARNING]: {
     heading: ALERT.WARN_HEADER,
     text: ALERT.WARN_TEXT,
     includeCancel: true,

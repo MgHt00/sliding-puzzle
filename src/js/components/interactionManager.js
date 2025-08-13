@@ -3,7 +3,7 @@ import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showAlert, hideAlert, showWinningScreen, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen, isElementVisible } from '../utils/domHelpers.js';
+import { showAlert, hideAlert, hideWinningScreen, showConfirmationScreen, hideConfirmationScreen, isElementVisible } from '../utils/domHelpers.js';
 import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
@@ -27,7 +27,7 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
   }
 }
 
-function _setWinAlert() {
+function _setAndShowWinAlert() {
   _boundConfirmHandler = () => {
     hideAlert();
     resetBoard();
@@ -64,7 +64,7 @@ function _handleTileClick(event) {
       // After the animation, check if the player has won.
       if (checkWinCondition(fetchContentType())) {
         //console.info("✅ SUCCESS: Player has won!")
-        _setWinAlert();
+        _setAndShowWinAlert();
       }
     });
   }
@@ -90,10 +90,29 @@ function _addWinAlertCloseListener() {
   }, 'Winning alert close button not found.');
 }
 
+function _setAndShowResetAlert() {
+  showAlert(ALERT.TYPE_WARNING);
+  const confirmBtn = SELECTORS.alertConfirmBtn();
+  const cancelBtn = SELECTORS.alertCancelBtn();
+
+  _boundConfirmHandler = () => {
+    resetBoard();
+    hideAlert();
+  };
+
+  _boundCancelHandler = () => {
+    hideAlert();
+  }
+
+  confirmBtn.addEventListener('click', _boundConfirmHandler);
+  cancelBtn.addEventListener('click', _boundCancelHandler);
+}
+
 function _addResetButtonListener() {
   _addEventListener(SELECTORS.btnReset, 'click', () => {
     if (fetchGameInProgress()) {
-      showConfirmationScreen();
+      //showConfirmationScreen();
+      _setAndShowResetAlert();
       return;
     }
     resetBoard();
