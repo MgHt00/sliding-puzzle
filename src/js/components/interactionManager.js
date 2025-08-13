@@ -3,11 +3,10 @@ import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showAlert, hideAlert, isElementVisible } from '../utils/domHelpers.js';
+import { showAlert, hideAlert as hideAlertFromDOM, isElementVisible } from '../utils/domHelpers.js';
 import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
-// To store references to the event handlers for easy removal.
 let _boundConfirmHandler = null;
 let _boundCancelHandler = null;
 
@@ -27,35 +26,57 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
   }
 }
 
+function _cleanupAlertHandlers() {
+  const confirmBtn = SELECTORS.alertConfirmBtn();
+  if (confirmBtn && _boundConfirmHandler) {
+    confirmBtn.removeEventListener('click', _boundConfirmHandler);
+  }
+
+  const cancelBtn = SELECTORS.alertCancelBtn();
+  if (cancelBtn && _boundCancelHandler) {
+    cancelBtn.removeEventListener('click', _boundCancelHandler);
+  }
+
+  _boundConfirmHandler = null;
+  _boundCancelHandler = null;
+}
+
+function _hideAlert() {
+  hideAlertFromDOM();
+  _cleanupAlertHandlers();
+}
+
 function _setAndShowWinAlert() {
+  _cleanupAlertHandlers(); // Ensure no old listeners are active
+
   _boundConfirmHandler = () => {
-    hideAlert();
+    _hideAlert();
     resetBoard();
   };
 
   const confirmBtn = SELECTORS.alertConfirmBtn();
   confirmBtn.addEventListener('click', _boundConfirmHandler);
 
-  showAlert(ALERT.TYPE_WON);
   setGameInProgress(false);
+  showAlert(ALERT.TYPE_WON);
 }
 
 function _setAndShowResetAlert() {
-  showAlert(ALERT.TYPE_WARNING);
+  _cleanupAlertHandlers(); // Ensure no old listeners are active
+
   const confirmBtn = SELECTORS.alertConfirmBtn();
   const cancelBtn = SELECTORS.alertCancelBtn();
 
   _boundConfirmHandler = () => {
     resetBoard();
-    hideAlert();
+    _hideAlert();
   };
 
-  _boundCancelHandler = () => {
-    hideAlert();
-  }
+  _boundCancelHandler = () => _hideAlert();
 
   confirmBtn.addEventListener('click', _boundConfirmHandler);
   cancelBtn.addEventListener('click', _boundCancelHandler);
+  showAlert(ALERT.TYPE_WARNING);
 }
 
 /**
@@ -118,14 +139,14 @@ function _addGlobalKeyPressListener() {
 
     // For reset alert
     if (isElementVisible(SELECTORS.alertWrapper()) && fetchGameInProgress()) {
-      hideAlert();
+      _boundCancelHandler?.(); // Trigger cancel action on 'Escape'
       SELECTORS.btnReset()?.blur();
       return;
     }
 
     // For winning alert
     if (isElementVisible(SELECTORS.alertWrapper()) && !fetchGameInProgress()) {
-      _boundConfirmHandler(); // as _boundConfirmHandler is already set by the _setAndShowWinAlert, we just need to call the function here.
+      _boundConfirmHandler?.(); // Trigger confirm action on 'Escape'
       SELECTORS.btnReset()?.blur();
       return;
     }

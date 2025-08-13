@@ -210,16 +210,6 @@ body {
   }
 }
 
-/*.confirmation-alert {
-  border: var(--confirmation-alert-border);
-}
-
-.winning-alert {
-  border: var(--winning-alert-boder);
-}*/
-
-/*TO DO: Change confirmation alert border color*/
-
 :is(.winning-alert, .confirmation-alert) .alert {
   color: var(--theme-decorative-font-color);
   border: solid 3px var(--theme-decorative-font-color);

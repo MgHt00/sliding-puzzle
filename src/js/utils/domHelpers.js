@@ -78,7 +78,7 @@ function _setAlertContent(heading, text, confirmText, cancelText) {
   alertCancelBtn.innerHTML = cancelText;
 }
 
-function _setAlertBorderColor(alertType) {
+function _setAlertAppearance(alertType) {
   const alertWrapper = SELECTORS.alertWrapper();
   const classToAdd = _classMap[alertType];
   if (alertWrapper && classToAdd) {
@@ -148,7 +148,7 @@ export function showAlert(type) {
   _resetAlertBox();
   _showOverlay();
   _setAlertContent(heading, text, confirmText, cancelText);
-  _setAlertBorderColor(alertType);
+  _setAlertAppearance(alertType);
   if (!includeCancel) {
     _hideAlertCancelBtn();
   }
