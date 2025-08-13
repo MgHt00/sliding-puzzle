@@ -61,13 +61,16 @@ function _setAndShowWinAlert() {
   showAlert(ALERT.TYPE_WON);
 }
 
-function _setAndShowResetAlert() {
+
+function _setAndShowResetAlert(contentType = fetchContentType()) {
   _cleanupAlertHandlers(); // Ensure no old listeners are active
 
   const confirmBtn = SELECTORS.alertConfirmBtn();
   const cancelBtn = SELECTORS.alertCancelBtn();
 
   _boundConfirmHandler = () => {
+    setContentType(contentType);
+    console.warn('Game board will reset with:', contentType);
     resetBoard();
     _hideAlert();
   };
@@ -140,10 +143,16 @@ function _addSettingListeners() {
       const currentContentType = fetchContentType();
 
       // Only reset the board if the content type has actually changed.
-      /*if (newContentType && newContentType !== currentContentType) {
+      if (newContentType && newContentType !== currentContentType) {
+        if (fetchGameInProgress()) {
+          _setAndShowResetAlert(newContentType);
+          return;
+        }
+
+        console.warn('Game is not in progress. Resetting board with', newContentType);
         setContentType(newContentType);
         resetBoard();
-      }*/
+      }
     }
   });
 }

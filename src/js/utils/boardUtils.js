@@ -155,6 +155,12 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = 
       _renderBoard(tilesToRenderOn, numbers);
       break;
     }
+    case CONTENT_TYPES.JAPANESE_NUMBERS: {
+      /*const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
+      _renderBoard(tilesToRenderOn, numbers);*/
+      console.warn("Nihongo will come");
+      break;
+    }
     // More cases here in the future
     // case 'photos':
     //   _renderPhotoBoard(tilesToRenderOn);
