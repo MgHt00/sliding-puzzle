@@ -53,11 +53,20 @@
   --confirmation-alert-border: solid 3px var(--theme-warning-color);
   --winning-alert-boder: solid 3px var(--theme-decorative-font-color);
 
+  --alert-border: solid 3px var(--theme-decorative-font-color);
+  --alert-box-shadow: rgba(255, 255, 255, 0.16) 0px 10px 36px 0px,
+                                  rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  --alert-btn-margin: 18px 9px 0 0;
+
   --theme-background-color: var(--color-night-darker, lightslategray);
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
   --theme-normal-font-family: var(--font-roboto, sans-serif);
-  --theme-warning-color: var(var(--color-warning-darkest));
+  --theme-warning-color: var(--color-warning-darkest);
+}
+
+.warning {
+  --alert-border: solid 3px var(--theme-warning-color);
 }
 
 * {
@@ -158,6 +167,7 @@ body {
 }
 
 .loading-spinner,
+.alert-wrapper,
 .winning-alert,
 .confirmation-alert {
   position: fixed;
@@ -177,15 +187,28 @@ body {
   box-shadow: var(--confirmation-alert-box-shadow);
 }
 
-/*.confirmation-alert {
-  border: var(--confirmation-alert-border);
+.alert-wrapper {
+  color: var(--theme-decorative-font-color);
+  border: var(--alert-border);
+  background: var(--theme-background-color);
+  box-shadow: var(--alert-box-shadow);
+
+  & h5 {
+    font-family: var(--theme-decorative-font-family);
+    font-size: var(--reset-btn-font-size, 25px);
+  }
+
+  & .btn {
+    color: var(--theme-decorative-font-color);
+    border-color: var(--theme-decorative-font-color);
+    margin: var(--alert-btn-margin);
+
+    &:hover {
+      background-color: var(--theme-decorative-font-color);
+      color: var(--theme-background-color);
+    }
+  }
 }
-
-.winning-alert {
-  border: var(--winning-alert-boder);
-}*/
-
-/*TO DO: Change confirmation alert border color*/
 
 :is(.winning-alert, .confirmation-alert) .alert {
   color: var(--theme-decorative-font-color);

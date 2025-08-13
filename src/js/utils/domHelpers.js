@@ -1,5 +1,6 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
+import { ALERT } from "../constants/appConstants.js";
 
 /**
  * Checks if an element is visible by checking for the absence of the 'd-none' class.
@@ -10,60 +11,94 @@ export function isElementVisible(element) {
   return element ? !element.classList.contains(CSS_CLASSES.D_NONE) : false;
 }
 
+function _showElement(element) {
+  if (element) {
+    element.classList.remove(CSS_CLASSES.D_NONE);
+  } else {
+    console.error('Element not found for showing.');
+  }
+}
+
+function _hideElement(element) {
+  if (element) {
+    element.classList.add(CSS_CLASSES.D_NONE);
+  } else {
+    console.error('Element not found for hiding.');
+  }
+}
+
 function _showOverlay() {
   const overlay = SELECTORS.overlay();
-  if (overlay) {
-    overlay.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(overlay);
 }
 
 function _hideOverlay() {
   const overlay = SELECTORS.overlay();
-  if (overlay) {
-    overlay.classList.add(CSS_CLASSES.D_NONE);
-  }
+  _hideElement(overlay);
 }
 
 function _showLoadingSpinner() {
   const loadingSpinner = SELECTORS.loadingSpinner();
-  if (loadingSpinner) {
-    loadingSpinner.classList.remove(CSS_CLASSES.D_NONE);
-  }
+  _showElement(loadingSpinner);
 }
 
 function _hideLoadingSpinner() {
   const loadingSpinner = SELECTORS.loadingSpinner();
-  if (loadingSpinner) {
-    loadingSpinner.classList.add(CSS_CLASSES.D_NONE);
+  _hideElement(loadingSpinner);
+}
+
+const _classMap = {
+  [ALERT.TYPE_WARNING]: CSS_CLASSES.WARNING,
+};
+
+function _resetAlertBox() {
+  const alertWrapper = SELECTORS.alertWrapper();  
+  const alertHeading = SELECTORS.alertHeading();
+  const alertText = SELECTORS.alertText();
+  const alertCancelBtn = SELECTORS.alertCancelBtn();
+
+  // To ensure a clean state, remove any alert-type-specific classes.
+  Object.values(_classMap).forEach(className => alertWrapper.classList.remove(className));
+  
+  alertHeading.innerHTML = '';
+  alertText.innerHTML = '';
+  
+  _showElement(alertCancelBtn);
+}
+
+function _setAlertContent(heading, text, confirmText, cancelText) {
+  const alertHeading = SELECTORS.alertHeading();
+  const alertText = SELECTORS.alertText();
+  const alertConfirmBtn = SELECTORS.alertConfirmBtn();
+  const alertCancelBtn = SELECTORS.alertCancelBtn();
+  
+  alertHeading.innerHTML = heading;
+  alertText.innerHTML = text;
+  alertConfirmBtn.innerHTML = confirmText;
+  alertCancelBtn.innerHTML = cancelText;
+}
+
+function _setAlertAppearance(alertType) {
+  const alertWrapper = SELECTORS.alertWrapper();
+  const classToAdd = _classMap[alertType];
+  if (alertWrapper && classToAdd) {
+    alertWrapper.classList.add(classToAdd);
   }
 }
 
-function _showWinningAlert() {
-  const winningAlert = SELECTORS.winningAlert();
-  if (winningAlert) {
-    winningAlert.classList.remove(CSS_CLASSES.D_NONE);
-  }
+function _showAlertWrapper() {
+  const alertWrapper = SELECTORS.alertWrapper();
+  _showElement(alertWrapper);
 }
 
-function _hideWinningAlert() {
-  const winningAlert = SELECTORS.winningAlert();
-  if (winningAlert) {
-    winningAlert.classList.add(CSS_CLASSES.D_NONE);
-  }
+function _hideAlertWrapper() {
+  const alertWrapper = SELECTORS.alertWrapper();
+  _hideElement(alertWrapper);
 }
 
-function _showConfirmationAlert() {
-  const confirmationAlert = SELECTORS.confirmationAlert();
-  if (confirmationAlert) {
-    confirmationAlert.classList.remove(CSS_CLASSES.D_NONE);
-  }
-}
-
-function _hideConfirmationAlert() {
-  const confirmationAlert = SELECTORS.confirmationAlert();
-  if (confirmationAlert) {
-    confirmationAlert.classList.add(CSS_CLASSES.D_NONE);
-  }
+function _hideAlertCancelBtn() {
+  const alertCancelBtn = SELECTORS.alertCancelBtn();
+  _hideElement(alertCancelBtn);
 }
 
 export function showLoadingScreen() {
@@ -76,22 +111,52 @@ export function hideLoadingScreen() {
   _hideLoadingSpinner();
 }
 
-export function showWinningScreen() {
+const alertContentMap = {
+  [ALERT.TYPE_WON]: {
+    heading: ALERT.WON_HEADER,
+    text: ALERT.WON_TEXT,
+    includeCancel: false,
+    confirmText: ALERT.BTN_CONFIRM,
+    cancelText: '',
+    alertType: ALERT.TYPE_DEFAULT,
+  },
+
+  [ALERT.TYPE_WARNING]: {
+    heading: ALERT.WARN_HEADER,
+    text: ALERT.WARN_TEXT,
+    includeCancel: true,
+    confirmText: ALERT.BTN_CONFIRM,
+    cancelText: ALERT.BTN_CANCEL,
+    alertType: ALERT.TYPE_WARNING,
+  }
+}
+
+export function showAlert(type) {
+  if (!type) {
+    console.error('No alert type provided.');
+    return;
+  }
+
+  const config = alertContentMap[type];
+  if (!config) {
+    console.error(`Unknown alert type: ${type}`);
+    return;
+  }
+
+  const { heading, text, includeCancel, confirmText, cancelText, alertType } = config;
+
+  _resetAlertBox();
   _showOverlay();
-  _showWinningAlert();
+  _setAlertContent(heading, text, confirmText, cancelText);
+  _setAlertAppearance(alertType);
+  if (!includeCancel) {
+    _hideAlertCancelBtn();
+  }
+  _showAlertWrapper();
 }
 
-export function hideWinningScreen() {
-  _hideWinningAlert();
-  _hideOverlay();
-}
-
-export function showConfirmationScreen() {
-  _showOverlay();
-  _showConfirmationAlert();
-}
-
-export function hideConfirmationScreen() {
-  _hideConfirmationAlert();
+export function hideAlert() {
+  _hideAlertWrapper();
+  _resetAlertBox();
   _hideOverlay();
 }
