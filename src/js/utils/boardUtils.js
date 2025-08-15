@@ -4,6 +4,7 @@ import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES } from '../constants/appConstan
 import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
+import { toJapaneseNumeral } from './numberFormatters.js';
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -136,8 +137,6 @@ export function resetBoard() {
   }
 }
 
-///// TO DO: change content with japanese numbers
-
 /**
  * Initializes the puzzle board by querying for tiles, designating an empty one,
  * generating the number sequence, and rendering the numbers onto the tiles.
@@ -175,9 +174,9 @@ export function initializeBoard({
       break;
     }
     case CONTENT_TYPES.JAPANESE_NUMBERS: {
-      /*const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
-      _renderBoard(tilesToRenderOn, numbers);*/
-      console.warn("Nihongo will come");
+      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
+      const japaneseNumerals = numbers.map(toJapaneseNumeral);
+      _renderBoard(tilesToRenderOn, japaneseNumerals);
       break;
     }
     // More cases here in the future
@@ -226,6 +225,12 @@ export function initializeSolvedBoard({
       _renderBoard(tilesToRenderOn, numbers);
       break;
     }
+    case CONTENT_TYPES.JAPANESE_NUMBERS: {
+      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random: false });
+      const japaneseNumerals = numbers.map(toJapaneseNumeral);
+      _renderBoard(tilesToRenderOn, japaneseNumerals);
+      break;
+    }
     default:
       console.error(`Unknown content type: ${contentType}`);
   }
@@ -250,6 +255,21 @@ function _isArabicSequence(allTiles) {
 }
 
 /**
+ * Checks if the tiles are in the correct Japanese numeral sequence (一, 二, 三, ...).
+ * @param {Array<Element>} allTiles - The array of all tile elements.
+ * @returns {boolean} - True if the sequence is correct.
+ */
+function _isJapaneseSequence(allTiles) {
+  for (let i = 0; i < allTiles.length - 1; i++) {
+    const tile = allTiles[i];
+    const expectedNumeral = toJapaneseNumeral(i + 1);
+    if (tile.innerHTML !== expectedNumeral) {
+      return false;
+    }
+  }
+  return true;
+}
+/**
  * Checks if the puzzle is in its winning state.
  * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)
  * and the last position is occupied by the empty tile.
@@ -269,8 +289,8 @@ export function checkWinCondition(contentType) {
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS:
       return _isArabicSequence(allTiles);
-    // case CONTENT_TYPES.JAPANESE_NUMBERS:
-    //   return _isJapaneseSequence(allTiles);
+    case CONTENT_TYPES.JAPANESE_NUMBERS:
+      return _isJapaneseSequence(allTiles);
     default:
       console.error(`Win condition check not implemented for content type: ${contentType}`);
       return false;
