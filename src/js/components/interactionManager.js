@@ -114,14 +114,16 @@ function _addTileClickListeners() {
 }
 
 function _addResetButtonListener() {
-  _addEventListener(SELECTORS.btnReset, 'click', async() => {
+  _addEventListener(SELECTORS.btnReset, 'click', async () => {
     if (fetchGameInProgress()) {
       const confirmed = await showConfirmationAlert();
       if (confirmed) {
         resetBoard();
       }
+    } else {
+      // If no game is in progress, reset immediately without confirmation.
+      resetBoard();
     }
-    resetBoard();
   }, 'Reset button not found.');
 }
 

@@ -84,6 +84,19 @@ function _removeTileContent() {
 }
 
 /**
+ * Removes any inline styles that may have been added during animations.
+ * This is crucial for preventing state-related bugs where a tile might be
+ * left unclickable (`pointer-events: none`) after an interrupted animation.
+ * By using `cssText`, we clear all inline styles for a comprehensive reset.
+ */
+function _clearTileStyles() {
+  console.info('Clearing all tile inline styles...');
+  const allTiles = SELECTORS.allTiles();
+  allTiles.forEach(tile => {
+    tile.style.cssText = '';
+  });
+}
+/**
  * Gets the row and column of a tile based on its index in the DOM.
  * This has been refactored to read from data attributes for better performance.
  * @param {Element} tile - The tile element.
@@ -128,6 +141,7 @@ export function resetBoard() {
   const state = fetchState();
   _removeEmptyTile();
   _removeTileContent();
+  _clearTileStyles();
 
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
