@@ -1,6 +1,6 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
-import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
+import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES } from '../constants/appConstants.js';
 import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
@@ -122,11 +122,30 @@ export function isTileMovable(tile, emptyTile) {
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
+export function resetBoard() {
+  console.warn('Resetting board...');
+  const state = fetchState();
+  _removeEmptyTile();
+  _removeTileContent();
+
+  // Check if we are in test mode to initialize the appropriate board state.
+  if (isWinTestMode()) {
+    initializeSolvedBoard(state);
+  } else {
+    initializeBoard(state);
+  }
+}
+
+///// TO DO: change content with japanese numbers
+
 /**
  * Initializes the puzzle board by querying for tiles, designating an empty one,
  * generating the number sequence, and rendering the numbers onto the tiles.
  */
-export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = CONTENT_TYPES.RANDOM } = {}) {
+export function initializeBoard({
+  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04 - computed-property-destructuring
+  [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
+} = {}) {
   // LT03 The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
   console.info('Initializing board...');
   const allTiles = SELECTORS.allTiles();
@@ -170,27 +189,15 @@ export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = 
   }
 }
 
-export function resetBoard() {
-  console.warn('Resetting board...');
-  const state = fetchState();
-  _removeEmptyTile();
-  _removeTileContent();
-
-  // Check if we are in test mode to initialize the appropriate board state.
-  if (isWinTestMode()) {
-    initializeSolvedBoard(state);
-  } else {
-    initializeBoard(state);
-  }
-}
-
 /**
  * Initializes the puzzle board in a solved state for testing purposes.
  * The empty tile is placed at the end and numbers are in sequential order.
  * @param {object} [options={}] - The options for initializing the board.
  * @param {string} [options.contentType=CONTENT_TYPES.DEFAULT] - The type of content to render.
  */
-export function initializeSolvedBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
+export function initializeSolvedBoard({
+  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT,
+} = {}) {
   console.info('Initializing solved board for testing...');
   const allTiles = SELECTORS.allTiles();
   const { columns, rows } = _getGridDimensions();
