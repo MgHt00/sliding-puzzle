@@ -9,8 +9,6 @@ import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgres
 let _isAnimating = false;
 let _boundConfirmHandler = null;
 let _boundCancelHandler = null;
-let _newContentType = null;
-let _currentContentType = null;
 
 /**
  * A helper function to add an event listener to an element, with a built-in check for the element's existence.
@@ -25,6 +23,21 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
     element.addEventListener(eventName, eventHandler);
   } else {
     console.error(errorMessage);
+  }
+}
+
+/**
+ * Synchronizes the settings UI (radio buttons) with the current application state.
+ * This ensures the UI always reflects the true state, preventing inconsistencies.
+ */
+function _syncSettingsUI() {
+  const currentContentType = fetchContentType();
+  // Find the radio button that corresponds to the current state by using its specific class and value.
+  const radioToCheck = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
+  if (radioToCheck) {
+    radioToCheck.checked = true;
+  } else {
+    console.error(`Could not find a setting radio button for content type: ${currentContentType}`);
   }
 }
 
@@ -91,16 +104,7 @@ function _setAndShowResetAlert(newContentType = fetchContentType()) {
   };
 
   _boundCancelHandler = () => {
-    const settingContentRadios = SELECTORS.settingContentTypeRadios();
-    settingContentRadios.forEach((radio) => {
-      if (radio.value === newContentType) {
-        radio.checked = false;
-      }
-      if (radio.value === fetchContentType()) {
-        radio.checked = true;
-      }
-    });
-    
+    _syncSettingsUI()    
     _hideAlert();
   }
 
@@ -164,19 +168,19 @@ function _addResetButtonListener() {
 function _addOffcanvasListeners() {
   _addEventListener(SELECTORS.offcanvasPanel, 'click', (event) => {
     if (event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
-      _newContentType = event.target.value;
-      _currentContentType = fetchContentType();
+      const newContentType = event.target.value;
+      const currentContentType = fetchContentType();
 
       // Only reset the board if the content type has actually changed.
-      if (_newContentType && _newContentType !== _currentContentType) {
+      if (newContentType && newContentType !== currentContentType) {
         if (fetchGameInProgress()) {
           _closeSettingsPanel();
-          _setAndShowResetAlert(_newContentType);
+          _setAndShowResetAlert(newContentType);
           return;
         }
 
-        console.warn('Game is not in progress. Resetting board with', _newContentType);
-        setContentType(_newContentType);
+        console.warn('Game is not in progress. Resetting board with', newContentType);
+        setContentType(newContentType);
         resetBoard();
         _closeSettingsPanel();
       }
