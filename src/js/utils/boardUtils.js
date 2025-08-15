@@ -129,24 +129,28 @@ export function resetBoard() {
   _removeEmptyTile();
   _removeTileContent();
 
-  // Check if we are in test mode to initialize the appropriate board state.
   if (isWinTestMode()) {
-    initializeSolvedBoard(state);
+    // For test mode, force a non-random (solved) board state.
+    initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
   } else {
+    // Otherwise, initialize with the current state (which might be random or not).
     initializeBoard(state);
   }
 }
 
 /**
  * Initializes the puzzle board by querying for tiles, designating an empty one,
- * generating the number sequence, and rendering the numbers onto the tiles.
+ * generating the content sequence, and rendering it onto the tiles.
+ * The behavior (random vs. solved) is controlled by the `random` property.
+ * @param {object} [options={}] - The options for initializing the board.
+ * @param {string} [options.contentType=CONTENT_TYPES.DEFAULT] - The type of content to render.
+ * @param {boolean} [options.random=true] - Whether to randomize the tile positions.
  */
 export function initializeBoard({
   [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04 - computed-property-destructuring
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
-  // LT03 The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
-  console.info('Initializing board...');
+  console.info(`Initializing board... (random: ${random})`);
   const allTiles = SELECTORS.allTiles();
   const { columns, rows } = _getGridDimensions();
   const tileCount = allTiles.length;
@@ -156,77 +160,28 @@ export function initializeBoard({
     return;
   }
 
-  // Sets the data-row and data-col attributes
   _setTileCoordinates(allTiles, columns);
 
-  // Designate one tile as the empty one
-  _addEmptyTile(allTiles);
+  if (random) {
+    _addEmptyTile(allTiles);
+  } else {
+    // For a solved (non-random) state, the empty tile MUST be the last one.
+    allTiles[tileCount - 1].classList.add(CSS_CLASSES.EMPTY_TILE);
+  }
 
   // Filter out the newly created empty tile to get the list of tiles to render numbers on.
   const tilesToRenderOn = Array.from(allTiles).filter(
     (tile) => !tile.classList.contains(CSS_CLASSES.EMPTY_TILE)
   );
 
+  const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
+
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS: {
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
       _renderBoard(tilesToRenderOn, numbers);
       break;
     }
     case CONTENT_TYPES.JAPANESE_NUMBERS: {
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
-      const japaneseNumerals = numbers.map(toJapaneseNumeral);
-      _renderBoard(tilesToRenderOn, japaneseNumerals);
-      break;
-    }
-    // More cases here in the future
-    // case 'photos':
-    //   _renderPhotoBoard(tilesToRenderOn);
-    //   break;
-    default:
-      console.error(`Unknown content type: ${contentType}`);
-  }
-}
-
-/**
- * Initializes the puzzle board in a solved state for testing purposes.
- * The empty tile is placed at the end and numbers are in sequential order.
- * @param {object} [options={}] - The options for initializing the board.
- * @param {string} [options.contentType=CONTENT_TYPES.DEFAULT] - The type of content to render.
- */
-export function initializeSolvedBoard({
-  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT,
-} = {}) {
-  console.info('Initializing solved board for testing...');
-  const allTiles = SELECTORS.allTiles();
-  const { columns, rows } = _getGridDimensions();
-  const tileCount = allTiles.length;
-
-  if (tileCount !== columns * rows) {
-    console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
-    return;
-  }
-
-  // Sets the data-row and data-col attributes
-  _setTileCoordinates(allTiles, columns);
-
-  // For a solved state, the empty tile MUST be the last one.
-  allTiles[tileCount - 1].classList.add(CSS_CLASSES.EMPTY_TILE);
-
-  // Filter out the newly created empty tile to get the list of tiles to render numbers on.
-  const tilesToRenderOn = Array.from(allTiles).filter(
-    (tile) => !tile.classList.contains(CSS_CLASSES.EMPTY_TILE)
-  );
-
-  switch (contentType) {
-    case CONTENT_TYPES.ARABIC_NUMBERS: {
-      // For a solved state, the sequence MUST NOT be random.
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random: false });
-      _renderBoard(tilesToRenderOn, numbers);
-      break;
-    }
-    case CONTENT_TYPES.JAPANESE_NUMBERS: {
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random: false });
       const japaneseNumerals = numbers.map(toJapaneseNumeral);
       _renderBoard(tilesToRenderOn, japaneseNumerals);
       break;
