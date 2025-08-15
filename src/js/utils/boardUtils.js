@@ -1,9 +1,10 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
-import { CONTENT_TYPES, STATE_KEYS } from '../constants/appConstants.js';
+import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES } from '../constants/appConstants.js';
 import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
+import { toJapaneseNumeral } from './numberFormatters.js';
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -122,70 +123,34 @@ export function isTileMovable(tile, emptyTile) {
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
-/**
- * Initializes the puzzle board by querying for tiles, designating an empty one,
- * generating the number sequence, and rendering the numbers onto the tiles.
- */
-export function initializeBoard({ contentType = CONTENT_TYPES.DEFAULT, random = CONTENT_TYPES.RANDOM } = {}) {
-  // LT03 The outer {} - "If this function is called with no arguments at all, then use an empty object {} as the argument."
-  console.info('Initializing board...');
-  const allTiles = SELECTORS.allTiles();
-  const { columns, rows } = _getGridDimensions();
-  const tileCount = allTiles.length;
-
-  if (tileCount !== columns * rows) {
-    console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
-    return;
-  }
-
-  // Sets the data-row and data-col attributes
-  _setTileCoordinates(allTiles, columns);
-
-  // Designate one tile as the empty one
-  _addEmptyTile(allTiles);
-
-  // Filter out the newly created empty tile to get the list of tiles to render numbers on.
-  const tilesToRenderOn = Array.from(allTiles).filter(
-    (tile) => !tile.classList.contains(CSS_CLASSES.EMPTY_TILE)
-  );
-
-  switch (contentType) {
-    case CONTENT_TYPES.ARABIC_NUMBERS: {
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
-      _renderBoard(tilesToRenderOn, numbers);
-      break;
-    }
-    // More cases here in the future
-    // case 'photos':
-    //   _renderPhotoBoard(tilesToRenderOn);
-    //   break;
-    default:
-      console.error(`Unknown content type: ${contentType}`);
-  }
-}
-
 export function resetBoard() {
   console.warn('Resetting board...');
   const state = fetchState();
   _removeEmptyTile();
   _removeTileContent();
 
-  // Check if we are in test mode to initialize the appropriate board state.
   if (isWinTestMode()) {
-    initializeSolvedBoard(state);
+    // For test mode, force a non-random (solved) board state.
+    initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
   } else {
+    // Otherwise, initialize with the current state (which might be random or not).
     initializeBoard(state);
   }
 }
 
 /**
- * Initializes the puzzle board in a solved state for testing purposes.
- * The empty tile is placed at the end and numbers are in sequential order.
+ * Initializes the puzzle board by querying for tiles, designating an empty one,
+ * generating the content sequence, and rendering it onto the tiles.
+ * The behavior (random vs. solved) is controlled by the `random` property.
  * @param {object} [options={}] - The options for initializing the board.
  * @param {string} [options.contentType=CONTENT_TYPES.DEFAULT] - The type of content to render.
+ * @param {boolean} [options.random=true] - Whether to randomize the tile positions.
  */
-export function initializeSolvedBoard({ contentType = CONTENT_TYPES.DEFAULT } = {}) {
-  console.info('Initializing solved board for testing...');
+export function initializeBoard({
+  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04 - computed-property-destructuring
+  [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
+} = {}) {
+  console.info(`Initializing board... (random: ${random})`);
   const allTiles = SELECTORS.allTiles();
   const { columns, rows } = _getGridDimensions();
   const tileCount = allTiles.length;
@@ -195,22 +160,30 @@ export function initializeSolvedBoard({ contentType = CONTENT_TYPES.DEFAULT } = 
     return;
   }
 
-  // Sets the data-row and data-col attributes
   _setTileCoordinates(allTiles, columns);
 
-  // For a solved state, the empty tile MUST be the last one.
-  allTiles[tileCount - 1].classList.add(CSS_CLASSES.EMPTY_TILE);
+  if (random) {
+    _addEmptyTile(allTiles);
+  } else {
+    // For a solved (non-random) state, the empty tile MUST be the last one.
+    allTiles[tileCount - 1].classList.add(CSS_CLASSES.EMPTY_TILE);
+  }
 
   // Filter out the newly created empty tile to get the list of tiles to render numbers on.
   const tilesToRenderOn = Array.from(allTiles).filter(
     (tile) => !tile.classList.contains(CSS_CLASSES.EMPTY_TILE)
   );
 
+  const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random });
+
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS: {
-      // For a solved state, the sequence MUST NOT be random.
-      const numbers = generateSequence({ min: 1, max: tileCount, inclusive: false, random: false });
       _renderBoard(tilesToRenderOn, numbers);
+      break;
+    }
+    case CONTENT_TYPES.JAPANESE_NUMBERS: {
+      const japaneseNumerals = numbers.map(toJapaneseNumeral);
+      _renderBoard(tilesToRenderOn, japaneseNumerals);
       break;
     }
     default:
@@ -237,6 +210,21 @@ function _isArabicSequence(allTiles) {
 }
 
 /**
+ * Checks if the tiles are in the correct Japanese numeral sequence (一, 二, 三, ...).
+ * @param {Array<Element>} allTiles - The array of all tile elements.
+ * @returns {boolean} - True if the sequence is correct.
+ */
+function _isJapaneseSequence(allTiles) {
+  for (let i = 0; i < allTiles.length - 1; i++) {
+    const tile = allTiles[i];
+    const expectedNumeral = toJapaneseNumeral(i + 1);
+    if (tile.innerHTML !== expectedNumeral) {
+      return false;
+    }
+  }
+  return true;
+}
+/**
  * Checks if the puzzle is in its winning state.
  * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)
  * and the last position is occupied by the empty tile.
@@ -256,8 +244,8 @@ export function checkWinCondition(contentType) {
   switch (contentType) {
     case CONTENT_TYPES.ARABIC_NUMBERS:
       return _isArabicSequence(allTiles);
-    // case CONTENT_TYPES.JAPANESE_NUMBERS:
-    //   return _isJapaneseSequence(allTiles);
+    case CONTENT_TYPES.JAPANESE_NUMBERS:
+      return _isJapaneseSequence(allTiles);
     default:
       console.error(`Win condition check not implemented for content type: ${contentType}`);
       return false;

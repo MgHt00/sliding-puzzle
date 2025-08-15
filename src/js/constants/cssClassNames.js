@@ -12,14 +12,12 @@ export const CSS_CLASSES = {
   TILE: 'puzzle-tile',
   EMPTY_TILE: 'empty-tile',
   WARNING: 'warning',
-  
-  WINNING_ALERT: "winning-alert",
-  BTN_CLOSE_WIN_ALERT: 'btn-close-win-alert',
-  CONFIRMATION_ALERT: 'confirmation-alert',
-  CONFIRMATION_ALERT_CANCEL: 'confirmation-alert-cancel',
-  CONFIRMATION_ALERT_CONFIRM: 'confirmation-alert-confirm',
-  
 
+  OFFCANVAS_PANEL: 'offcanvas-panel',
+  SETTING_CONTENT_TYPE: 'content-type',
+  SETTING_ARABIC: 'content-arabic-number',
+  SETTING_JAPANESE: 'content-japanese-number',
+  
   BTN_RESET: 'btn-reset',
   
   WRAPPER_ALERT: 'alert-wrapper',

@@ -4,7 +4,7 @@ import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
 import { showAlert, hideAlert as hideAlertFromDOM, isElementVisible } from '../utils/domHelpers.js';
-import { fetchContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
+import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
 let isAnimating = false;
 let _boundConfirmHandler = null;
@@ -61,15 +61,32 @@ function _setAndShowWinAlert() {
   showAlert(ALERT.TYPE_WON);
 }
 
-function _setAndShowResetAlert() {
+/**
+ * Closes the settings offcanvas panel using the Bootstrap JavaScript API.
+ */
+function _closeSettingsPanel() {
+  const settingsPanel = SELECTORS.offcanvasPanel();
+  if (!settingsPanel) {
+    console.error('Settings panel element not found.');
+    return;
+  }
+
+  const offcanvasInstance = bootstrap.Offcanvas.getInstance(settingsPanel);
+  offcanvasInstance?.hide();
+}
+
+function _setAndShowResetAlert(contentType = fetchContentType()) {
   _cleanupAlertHandlers(); // Ensure no old listeners are active
 
   const confirmBtn = SELECTORS.alertConfirmBtn();
   const cancelBtn = SELECTORS.alertCancelBtn();
 
   _boundConfirmHandler = () => {
+    setContentType(contentType);
+    console.warn('Game board will reset with:', contentType);
     resetBoard();
     _hideAlert();
+
   };
 
   _boundCancelHandler = () => _hideAlert();
@@ -131,6 +148,29 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
+function _addOffcanvasListeners() {
+  _addEventListener(SELECTORS.offcanvasPanel, 'click', (event) => {
+    if (event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
+      const newContentType = event.target.value;
+      const currentContentType = fetchContentType();
+
+      // Only reset the board if the content type has actually changed.
+      if (newContentType && newContentType !== currentContentType) {
+        if (fetchGameInProgress()) {
+          _closeSettingsPanel();
+          _setAndShowResetAlert(newContentType);
+          return;
+        }
+
+        console.warn('Game is not in progress. Resetting board with', newContentType);
+        setContentType(newContentType);
+        resetBoard();
+        _closeSettingsPanel();
+      }
+    }
+  });
+}
+
 function _addGlobalKeyPressListener() {
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {
@@ -157,4 +197,5 @@ export function addAllClickListeners() {
   _addTileClickListeners();
   _addGlobalKeyPressListener();
   _addResetButtonListener();
+  _addOffcanvasListeners();
 }

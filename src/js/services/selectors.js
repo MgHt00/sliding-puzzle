@@ -7,14 +7,8 @@ export const SELECTORS = {
   
   overlay: () => document.querySelector(`.${CSS_CLASSES.OVERLAY}`),
   loadingSpinner: () => document.querySelector(`.${CSS_CLASSES.LOADING_SPINNER}`),
-  winningAlert: () => document.querySelector(`.${CSS_CLASSES.WINNING_ALERT}`),
-  confirmationAlert: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT}`),
   
-  btnCloseWinAlert: () => document.querySelector(`.${CSS_CLASSES.BTN_CLOSE_WIN_ALERT}`),
   btnReset: () => document.querySelector(`.${CSS_CLASSES.BTN_RESET}`),
-
-  btnAlertConfirm: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CONFIRM}`),
-  btnAlertCancel: () => document.querySelector(`.${CSS_CLASSES.CONFIRMATION_ALERT_CANCEL}`),
 
   alertWrapper: () => document.querySelector(`.${CSS_CLASSES.WRAPPER_ALERT}`),
   alertHeading: () => document.querySelector(`.${CSS_CLASSES.CONTENT_ALERT_HEADING}`),
@@ -22,4 +16,8 @@ export const SELECTORS = {
   alertConfirmBtn: () => document.querySelector(`.${CSS_CLASSES.BTN_ALERT_CONFIRM}`),
   alertCancelBtn: () => document.querySelector(`.${CSS_CLASSES.BTN_ALERT_CANCEL}`),
 
+  offcanvasPanel: () => document.querySelector(`.${CSS_CLASSES.OFFCANVAS_PANEL}`),
+  settingContentType: () => document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}`),
+  settingArabic: () => document.querySelector(`.${CSS_CLASSES.SETTING_ARABIC}`),
+  settingJapanese: () => document.querySelector(`.${CSS_CLASSES.SETTING_JAPANESE}`),
 };

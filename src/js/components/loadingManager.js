@@ -1,7 +1,8 @@
-import { initializeBoard, initializeSolvedBoard, checkWinCondition } from '../utils/boardUtils.js';
+import { initializeBoard, checkWinCondition } from '../utils/boardUtils.js';
 import { addAllClickListeners } from './interactionManager.js';
 import { isWinTestMode } from '../utils/urlUtils.js';
 import { fetchState } from '../services/globalDataManager.js';
+import { STATE_KEYS } from '../constants/appConstants.js';
 
 /**
  * Manages the game's startup sequence.
@@ -11,10 +12,12 @@ export function startGame() {
   console.log('Starting game...');
   // Future: Show a loading spinner or welcome screen here.
 
+  const state = fetchState();
+
   // Check if we are in test mode to initialize the appropriate board state.
   if (isWinTestMode()) {
-    const state = fetchState();
-    initializeSolvedBoard({ contentType: state.contentType });
+    // For test mode, we want a non-random board.
+    initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
 
     // Immediately check if the win condition is met.
     if (checkWinCondition(state.contentType)) {
@@ -24,7 +27,7 @@ export function startGame() {
     }
   } else {
     // Start a normal, randomized game.
-    initializeBoard(fetchState());
+    initializeBoard(state);
   }
 
   // Once the board is set up, add the interaction listeners.
