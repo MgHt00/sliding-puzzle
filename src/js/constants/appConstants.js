@@ -31,3 +31,8 @@ export const ALERT = {
 export const TEXT = {
   WON: 'Congratulations! You have won!',
 }
+
+export const HTML_TAGS = {
+  DIV: 'div',
+  SPAN: 'span',
+}

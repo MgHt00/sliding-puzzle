@@ -1,7 +1,7 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
-import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES } from '../constants/appConstants.js';
-import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
+import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES, HTML_TAGS } from '../constants/appConstants.js';
+import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
@@ -38,6 +38,23 @@ function _getGridDimensions() {
   const columns = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS), 10) || 0;
   const rows = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS), 10) || 0;
   return { columns, rows };
+}
+
+function _addTiles() {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for adding tiles.');
+    return;
+  }
+
+  const { columns, rows } = _getGridDimensions();
+  const tileCount = columns * rows;
+
+  for (let i = 0; i < tileCount; i++) {
+    const tile = document.createElement(HTML_TAGS.DIV);
+    tile.classList.add(CSS_CLASSES.TILE);
+    board.appendChild(tile);
+  }
 }
 
 /**
@@ -165,10 +182,12 @@ export function initializeBoard({
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
+  
+  _addTiles();
   const allTiles = SELECTORS.allTiles();
-  const { columns, rows } = _getGridDimensions();
   const tileCount = allTiles.length;
-  console.info(`tileCount: ${tileCount}, columns: ${columns}, rows: ${rows}`);
+
+  const { columns, rows } = _getGridDimensions();
 
   if (tileCount !== columns * rows) {
     console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
