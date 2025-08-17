@@ -3,12 +3,11 @@ import { CSS_CLASSES } from '../constants/cssClassNames.js';
 import { ALERT } from '../constants/appConstants.js';
 import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtils.js';
 import { swapTiles } from '../utils/animationUtils.js';
-import { showAlert, hideAlert as hideAlertFromDOM, isElementVisible } from '../utils/domHelpers.js';
+import { showAlert, hideAlert, isElementVisible } from '../utils/domHelpers.js';
+import { showConfirmationAlert } from '../controllers/alertController.js';
 import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
 
-let isAnimating = false;
-let _boundConfirmHandler = null;
-let _boundCancelHandler = null;
+let _isAnimating = false;
 
 /**
  * A helper function to add an event listener to an element, with a built-in check for the element's existence.
@@ -26,39 +25,36 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
   }
 }
 
-function _cleanupAlertHandlers() {
-  const confirmBtn = SELECTORS.alertConfirmBtn();
-  if (confirmBtn && _boundConfirmHandler) {
-    confirmBtn.removeEventListener('click', _boundConfirmHandler);
+/**
+ * Synchronizes the settings UI (radio buttons) with the current application state.
+ * This ensures the UI always reflects the true state, preventing inconsistencies.
+ */
+function _syncSettingsUI() {
+  const currentContentType = fetchContentType();
+  // Find the radio button that corresponds to the current state by using its specific class and value.
+  const radioToCheck = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
+  if (radioToCheck) {
+    radioToCheck.checked = true;
+  } else {
+    console.error(`Could not find a setting radio button for content type: ${currentContentType}`);
   }
-
-  const cancelBtn = SELECTORS.alertCancelBtn();
-  if (cancelBtn && _boundCancelHandler) {
-    cancelBtn.removeEventListener('click', _boundCancelHandler);
-  }
-
-  _boundConfirmHandler = null;
-  _boundCancelHandler = null;
-}
-
-function _hideAlert() {
-  hideAlertFromDOM();
-  _cleanupAlertHandlers();
 }
 
 function _setAndShowWinAlert() {
-  _cleanupAlertHandlers(); // Ensure no old listeners are active
-
-  _boundConfirmHandler = () => {
-    _hideAlert();
-    resetBoard();
-  };
-
   const confirmBtn = SELECTORS.alertConfirmBtn();
-  confirmBtn.addEventListener('click', _boundConfirmHandler);
+  if (!confirmBtn) return;
+
+  const handleConfirm = () => {
+    hideAlert();
+    resetBoard();
+    confirmBtn.removeEventListener('click', handleConfirm);
+  };
 
   setGameInProgress(false);
   showAlert(ALERT.TYPE_WON);
+
+  // Use { once: true } for safety, though we also manually remove it.
+  confirmBtn.addEventListener('click', handleConfirm, { once: true });
 }
 
 /**
@@ -75,34 +71,13 @@ function _closeSettingsPanel() {
   offcanvasInstance?.hide();
 }
 
-function _setAndShowResetAlert(contentType = fetchContentType()) {
-  _cleanupAlertHandlers(); // Ensure no old listeners are active
-
-  const confirmBtn = SELECTORS.alertConfirmBtn();
-  const cancelBtn = SELECTORS.alertCancelBtn();
-
-  _boundConfirmHandler = () => {
-    setContentType(contentType);
-    console.warn('Game board will reset with:', contentType);
-    resetBoard();
-    _hideAlert();
-
-  };
-
-  _boundCancelHandler = () => _hideAlert();
-
-  confirmBtn.addEventListener('click', _boundConfirmHandler);
-  cancelBtn.addEventListener('click', _boundCancelHandler);
-  showAlert(ALERT.TYPE_WARNING);
-}
-
 /**
  * Handles the click event on a puzzle tile.
  * Checks if the tile is movable and initiates the swap if it is.
  * @param {Event} event - The click event object.
  */
 function _handleTileClick(event) {
-  if (isAnimating) {
+  if (_isAnimating) {
     console.warn('Animation in progress, please wait.');
     return;
   }
@@ -113,9 +88,9 @@ function _handleTileClick(event) {
   if (isTileMovable(clickedTile, emptyTile)) {
     console.log('Tile is movable, swapping...');
     setGameInProgress(true);
-    isAnimating = true;
+    _isAnimating = true;
     swapTiles({ sourceTile: clickedTile, targetTile: emptyTile }).then(() => {
-      isAnimating = false;
+      _isAnimating = false;
       // After the animation, check if the player has won.
       if (checkWinCondition(fetchContentType())) {
         //console.info("✅ SUCCESS: Player has won!")
@@ -139,36 +114,59 @@ function _addTileClickListeners() {
 }
 
 function _addResetButtonListener() {
-  _addEventListener(SELECTORS.btnReset, 'click', () => {
+  _addEventListener(SELECTORS.btnReset, 'click', async () => {
     if (fetchGameInProgress()) {
-      _setAndShowResetAlert();
-      return;
+      const confirmed = await showConfirmationAlert();
+      if (confirmed) {
+        resetBoard();
+      }
+    } else {
+      // If no game is in progress, reset immediately without confirmation.
+      resetBoard();
     }
-    resetBoard();
   }, 'Reset button not found.');
 }
 
-function _addOffcanvasListeners() {
-  _addEventListener(SELECTORS.offcanvasPanel, 'click', (event) => {
-    if (event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
-      const newContentType = event.target.value;
-      const currentContentType = fetchContentType();
+/**
+ * Handles a change event on the content type settings.
+ * @param {Event} event - The event object from the click.
+ */
+async function _handleSettingChange(event) {
+  if (!event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
+    return;
+  }
 
-      // Only reset the board if the content type has actually changed.
-      if (newContentType && newContentType !== currentContentType) {
-        if (fetchGameInProgress()) {
-          _closeSettingsPanel();
-          _setAndShowResetAlert(newContentType);
-          return;
-        }
+  const newContentType = event.target.value;
+  const currentContentType = fetchContentType();
 
-        console.warn('Game is not in progress. Resetting board with', newContentType);
-        setContentType(newContentType);
-        resetBoard();
-        _closeSettingsPanel();
-      }
+  // Only proceed if the content type has actually changed.
+  if (!newContentType || newContentType === currentContentType) {
+    return;
+  }
+
+  _closeSettingsPanel();
+
+  if (fetchGameInProgress()) {
+    const confirmed = await showConfirmationAlert();
+    if (confirmed) {
+      setContentType(newContentType);
+      resetBoard();
+    } else {
+      _syncSettingsUI(); // User canceled, so sync UI back to the original state.
     }
-  });
+  } else {
+    console.warn('Game is not in progress. Resetting board with', newContentType);
+    setContentType(newContentType);
+    resetBoard();
+  }
+}
+
+function _addOffcanvasListeners() {
+  const offcanvasPanel = SELECTORS.offcanvasPanel();
+  if (!offcanvasPanel) return;
+
+  offcanvasPanel.addEventListener('show.bs.offcanvas', _syncSettingsUI);
+  offcanvasPanel.addEventListener('click', _handleSettingChange);
 }
 
 function _addGlobalKeyPressListener() {
@@ -177,16 +175,11 @@ function _addGlobalKeyPressListener() {
       return;
     }
 
-    // For reset alert
-    if (isElementVisible(SELECTORS.alertWrapper()) && fetchGameInProgress()) {
-      _boundCancelHandler?.(); // Trigger cancel action on 'Escape'
-      SELECTORS.btnReset()?.blur();
-      return;
-    }
-
-    // For winning alert
+    // The confirmation (reset) alert is now handled by alertController,
+    // which listens for 'Escape' automatically. We only need to handle the 'win' alert.
     if (isElementVisible(SELECTORS.alertWrapper()) && !fetchGameInProgress()) {
-      _boundConfirmHandler?.(); // Trigger confirm action on 'Escape'
+      // The win alert only has a confirm button, so we can just "click" it.
+      SELECTORS.alertConfirmBtn()?.click();
       SELECTORS.btnReset()?.blur();
       return;
     }
