@@ -116,16 +116,14 @@ body {
     margin-top: var(--offcanvas-subheading-margin-top);
   }
 
-  & h5 + * {
+  & h5+* {
     margin-top: var(--offcanvas-subheading-first-sibling-margin-top);
   }
 
-  & .setting-grid-size {
-
-    & .btn:hover {
-      background-color: var(--theme-decorative-font-color);
-      color: var(--theme-background-color);
-    }
+  & .btn-label:hover,
+  & input[type="radio"]:checked + .btn-label {  /* to target the label based on the state of the radio input. */
+    background-color: var(--theme-decorative-font-color);
+    color: var(--theme-background-color);
   }
 
   & .setting-content {
