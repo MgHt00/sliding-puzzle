@@ -57,6 +57,16 @@ function _addTiles() {
   }
 }
 
+function _removeAllTiles() {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for removing tiles.');
+    return;
+  }
+
+  board.replaceChildren();
+}
+
 /**
  * Sets the data-row and data-col attributes for each tile on the board.
  * This makes tile positions easily accessible without complex calculations.
@@ -156,10 +166,9 @@ export function isTileMovable(tile, emptyTile) {
 export function resetBoard() {
   console.warn('Resetting board...');
   const state = fetchState();
-  _removeEmptyTile();
-  _removeTileContent();
-  _clearTileStyles();
-
+  // By removing all tiles, we ensure a clean slate for re-initialization.
+  // This is more robust than clearing content and styles individually.
+  _removeAllTiles();
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
     initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
