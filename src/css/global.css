@@ -120,16 +120,22 @@ body {
     margin-top: var(--offcanvas-subheading-first-sibling-margin-top);
   }
 
+  & .setting-grid-size {
+
+    & .btn:hover {
+      background-color: var(--theme-decorative-font-color);
+      color: var(--theme-background-color);
+    }
+  }
+
   & .setting-content {
     display: flex;
     gap: 10px;
-  }
 
-  & .form-check {
+    & .form-check {
     margin: var(--setting-option-margin);
+    }
   }
-
-  
 }
 
 .puzzle-board {

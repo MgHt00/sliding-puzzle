@@ -23,11 +23,19 @@
       </button>
       <div class="offcanvas offcanvas-end offcanvas-panel" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
-          <h4 class="offcanvas-title" id="offcanvasNavbarLabel">Game Setting</h4>
+          <h4 class="offcanvas-title" id="offcanvasNavbarLabel">Game Settings</h4>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
           <h5>Board Size</h5>
+          <div class="setting-grid-size">
+            <input type="radio" class="btn-check" name="options-base" id="setting-grid-3x3" value="3x3" autocomplete="off" checked>
+            <label class="btn" for="setting-grid-3x3">3x3</label>
+
+            <input type="radio" class="btn-check" name="options-base" id="setting-grid-4x4" value="4x4" autocomplete="off">
+            <label class="btn" for="setting-grid-4x4">4x4</label>
+          </div>
+
           <h5>Content Type</h5>
           <div class="setting-content">
             <div class="form-check">
