@@ -23,22 +23,33 @@
       </button>
       <div class="offcanvas offcanvas-end offcanvas-panel" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Game Setting</h5>
+          <h4 class="offcanvas-title" id="offcanvasNavbarLabel">Game Setting</h4>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body settings">
-          <div class="form-check">
-            <input class="form-check-input content-type content-arabic-number" type="radio" name="setting-contentType-radio" id="setting-contentType-arabic-numbers" value="arabic-numbers" checked>
-            <label class="form-check-label" for="setting-contentType-arabic-numbers">
-              Arabic Numbers
-            </label>
+        <div class="offcanvas-body">
+          <h5>Board Size</h5>
+          <h5>Content Type</h5>
+          <div class="setting-content">
+            <div class="form-check">
+              <input class="form-check-input content-type content-arabic-number" type="radio" name="setting-contentType-radio"
+                id="setting-contentType-arabic-numbers" value="arabic-numbers" checked>
+              <label class="form-check-label" for="setting-contentType-arabic-numbers">
+                Arabic Numbers
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input content-type content-japanese-number" type="radio" name="setting-contentType-radio"
+                id="setting-contentType-japanese-numbers" value="japanese-numbers">
+              <label class="form-check-label" for="setting-contentType-japanese-numbers">
+                Japanese Numbers
+              </label>
+            </div>
           </div>
-          <div class="form-check">
-            <input class="form-check-input content-type content-japanese-number" type="radio" name="setting-contentType-radio" id="setting-contentType-japanese-numbers" value="japanese-numbers">
-            <label class="form-check-label" for="setting-contentType-japanese-numbers">
-              Japanese Numbers
-            </label>
-          </div>
+          <!--<input type="radio" class="btn-check form-check-input content-type content-arabic-number" name="setting-contentType-radio" id="setting-contentType-arabic-numbers" value="arabic-numbers" autocomplete="off" checked>
+          <label class="btn form-check-label" for="setting-contentType-arabic-numbers">Arabic Numbers</label>
+
+          <input type="radio" class="btn-check form-check-input content-type content-japanese-number" name="setting-contentType-radio" id="setting-contentType-japanese-numbers" value="japanese-numbers" autocomplete="off">
+          <label class="btn form-check-label" for="setting-contentType-japanese-numbers">Japanese Numbers</label>-->
         </div>
       </div>
     </div>

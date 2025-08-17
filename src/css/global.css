@@ -60,6 +60,12 @@
                                   rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   --alert-btn-margin: 18px 9px 0 0;
 
+  --offcanvas-subheading-text-decoration: underline wavy 3px;
+  --offcanvas-subheading-skip-ink: none;
+  --offcanvas-subheading-underline-offset: 8px;
+  --offcanvas-subheading-margin-top: 30px;
+  --offcanvas-subheading-first-sibling-margin-top: 20px;
+
   --theme-background-color: var(--color-night-darker, lightslategray);
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
@@ -96,6 +102,27 @@ body {
     font-family: var(--theme-decorative-font-family);
     color: var(--theme-decorative-font-color);
     font-size: var(--setting-heading-font-size, 30px);
+  }
+
+  & h5 {
+    font-family: var(--theme-decorative-font-family);
+    color: var(--theme-decorative-font-color);
+    text-decoration: var(--offcanvas-subheading-text-decoration);
+    text-decoration-skip-ink: var(--offcanvas-subheading-skip-ink);
+    text-underline-offset: var(--offcanvas-subheading-underline-offset);
+  }
+
+  & h5:not(:first-child) {
+    margin-top: var(--offcanvas-subheading-margin-top);
+  }
+
+  & h5 + * {
+    margin-top: var(--offcanvas-subheading-first-sibling-margin-top);
+  }
+
+  & .setting-content {
+    display: flex;
+    gap: 10px;
   }
 
   & .form-check {

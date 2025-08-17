@@ -168,6 +168,7 @@ export function initializeBoard({
   const allTiles = SELECTORS.allTiles();
   const { columns, rows } = _getGridDimensions();
   const tileCount = allTiles.length;
+  console.info(`tileCount: ${tileCount}, columns: ${columns}, rows: ${rows}`);
 
   if (tileCount !== columns * rows) {
     console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
