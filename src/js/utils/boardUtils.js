@@ -40,6 +40,7 @@ function _getGridDimensions() {
   return { columns, rows };
 }
 
+// Creates and appends the correct number of tile elements to the board.
 function _addTiles() {
   const board = SELECTORS.board();
   if (!board) {
@@ -57,6 +58,7 @@ function _addTiles() {
   }
 }
 
+// Efficiently removes all tile elements from the board.
 function _removeAllTiles() {
   const board = SELECTORS.board();
   if (!board) {
@@ -92,39 +94,8 @@ function _addEmptyTile(tiles) {
   tiles[randomIndex].classList.add(CSS_CLASSES.EMPTY_TILE);
 }
 
-function _removeEmptyTile() {
-  console.info('Removing empty tile...');
-  const emptyTile = SELECTORS.emptyTile();
-  if (emptyTile) {
-    emptyTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
-  } else {
-    console.error('Empty tile not found.');
-  }
-}
-
-function _removeTileContent() {
-  console.info('Removing tile content...');
-  const allTiles = SELECTORS.allTiles();
-  allTiles.forEach((tile) => {
-    tile.innerHTML = '';
-  });
-}
-
+// Gets the row and column of a tile based on its index in the DOM.
 /**
- * Removes any inline styles that may have been added during animations.
- * This is crucial for preventing state-related bugs where a tile might be
- * left unclickable (`pointer-events: none`) after an interrupted animation.
- * By using `cssText`, we clear all inline styles for a comprehensive reset.
- */
-function _clearTileStyles() {
-  console.info('Clearing all tile inline styles...');
-  const allTiles = SELECTORS.allTiles();
-  allTiles.forEach(tile => {
-    tile.style.cssText = '';
-  });
-}
-/**
- * Gets the row and column of a tile based on its index in the DOM.
  * This has been refactored to read from data attributes for better performance.
  * @param {Element} tile - The tile element.
  * @returns {{row: number, col: number}|null}
@@ -163,12 +134,18 @@ export function isTileMovable(tile, emptyTile) {
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
+/**
+ * Resets the entire puzzle board to a new state.
+ * It clears all existing tiles and re-initializes the board based on the
+ * current global state, or a 'solved' state if in test mode.
+ */
 export function resetBoard() {
   console.warn('Resetting board...');
   const state = fetchState();
+  
   // By removing all tiles, we ensure a clean slate for re-initialization.
-  // This is more robust than clearing content and styles individually.
   _removeAllTiles();
+
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
     initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
@@ -187,7 +164,7 @@ export function resetBoard() {
  * @param {boolean} [options.random=true] - Whether to randomize the tile positions.
  */
 export function initializeBoard({
-  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04 - computed-property-destructuring
+  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
@@ -267,6 +244,7 @@ function _isJapaneseSequence(allTiles) {
   }
   return true;
 }
+
 /**
  * Checks if the puzzle is in its winning state.
  * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)
