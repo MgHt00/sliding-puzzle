@@ -26,6 +26,7 @@
   --font-bangers: "Bangers", system-ui;
   --font-knewave: "Knewave", system-ui;
 
+  /* TO DO: 4x4 board */
   --puzzle-board-columns: 3;
   --puzzle-board-rows: 3;
   --puzzle-board-gap: 5px;

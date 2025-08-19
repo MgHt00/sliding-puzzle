@@ -127,15 +127,20 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
-/**
- * Handles a change event on the content type settings.
- * @param {Event} event - The event object from the click.
- */
-async function _handleSettingChange(event) {
-  if (!event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
-    return;
-  }
+const classListMap = {
+  boardSize: CSS_CLASSES.SETTING_GRID_SIZE,
+  contentType: CSS_CLASSES.SETTING_CONTENT_TYPE,
+}
 
+function _classListContains(element) {
+  for (let [key, className] of Object.entries(classListMap)) {
+    if (element.classList.contains(className)) {
+      return key;
+    } 
+  }
+}
+
+async function _handleContentTypeChange(event) {
   const newContentType = event.target.value;
   const currentContentType = fetchContentType();
 
@@ -158,6 +163,30 @@ async function _handleSettingChange(event) {
     console.warn('Game is not in progress. Resetting board with', newContentType);
     setContentType(newContentType);
     resetBoard();
+  }
+}
+
+/**
+ * Handles a change event on the content type settings.
+ * @param {Event} event - The event object from the click.
+ */
+async function _handleSettingChange(event) {
+  let targetSetting = _classListContains(event.target);
+  if (!targetSetting) {
+    return;
+  }
+
+  switch (targetSetting) {
+    case 'boardSize':
+      console.info("Board size changed");
+      break;
+    
+    case 'contentType':
+      _handleContentTypeChange(event);
+      break;
+    
+    default:
+      break;
   }
 }
 
