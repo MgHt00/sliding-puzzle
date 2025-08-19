@@ -5,6 +5,7 @@ import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
+import { getCssCustomProperty } from './cssHelpers.js';
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -34,9 +35,8 @@ function _getGridDimensions() {
     console.error('Board element not found for getting dimensions.');
     return { columns: 0, rows: 0 };
   }
-  const style = getComputedStyle(board);
-  const columns = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS), 10) || 0;
-  const rows = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS), 10) || 0;
+  const columns = getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, 'number') || 0;
+  const rows = getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, 'number') || 0;
   return { columns, rows };
 }
 

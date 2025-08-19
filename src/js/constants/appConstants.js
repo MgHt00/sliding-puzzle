@@ -7,6 +7,7 @@ export const STATE_KEYS = {
 
 export const STATE_VALUES = {
   DEFAULT_CONTENT: 'arabic-numbers',
+  DEFAULT_BOARD_SIZE: 3,
   RANDOM: true,
   GAME_IN_PROGRESS: false,
 }
