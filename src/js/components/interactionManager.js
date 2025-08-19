@@ -41,7 +41,7 @@ function _syncSettingsUI() {
 
   // Sync board size radio buttons
   const currentBoardSize = fetchBoardSize();
-  const boardSizeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_BOARD_SIZE}[value="${currentBoardSize}"]`);
+  const boardSizeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_GRID_SIZE}[value="${currentBoardSize}"]`);
   if (boardSizeRadio) {
     boardSizeRadio.checked = true;
   } else {
