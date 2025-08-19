@@ -48,30 +48,14 @@ function _getGridDimensions() {
  * This ensures the CSS grid layout matches the application's state.
  * @param {number} boardSize - The number of columns and rows for the grid.
  */
-/*function _setBoardGridStyles(boardSize) {
-  const board = SELECTORS.board();
-  if (!board) {
-    console.error('Board element not found for setting grid styles.');
-    return;
-  }
-  setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, boardSize);
-  setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, boardSize);
-}*/
-
-/**
- * Sets the grid dimensions on the board element using CSS custom properties.
- * This ensures the CSS grid layout matches the application's state.
- * @param {string} boardClass - The number of columns and rows for the grid.
- */
 function _setBoardGridStyles(boardSize) {
-  resetBoardSizeClass();
-  setBoardSizeClass(boardSize);
-
   const board = SELECTORS.board();
   if (!board) {
     console.error('Board element not found for setting grid styles.');
     return;
   }
+  resetBoardSizeClass(board);
+  setBoardSizeClass(board, boardSize);
 }
 
 /**
@@ -179,11 +163,11 @@ export function resetBoard() {
   console.warn('Resetting board...');
   const state = fetchState();
   
-  // By removing all tiles, we ensure a clean slate for re-initialization.
   _removeAllTiles();
 
-  // Removing current board size class before reset. 
-  resetBoardSizeClass();
+  // Removing current board size class before re-initializing.
+  const board = SELECTORS.board();
+  if (board) resetBoardSizeClass(board);
 
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.

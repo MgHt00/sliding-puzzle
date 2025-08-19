@@ -1,6 +1,6 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
-import { ALERT, BOARD_SIZES, BOARD_SIZE_CLASSES } from "../constants/appConstants.js";
+import { ALERT, BOARD_SIZE_CLASSES } from "../constants/appConstants.js";
 
 /**
  * Checks if an element is visible by checking for the absence of the 'd-none' class.
@@ -51,22 +51,25 @@ const _classMap = {
   [ALERT.TYPE_WARNING]: CSS_CLASSES.WARNING,
 };
 
-export function resetBoardSizeClass() {
-  const board = SELECTORS.board();
-  if (!board) {
+export function resetBoardSizeClass(boardElement) {
+  if (!boardElement) {
     console.error('Board element not found for resetting board size class.');
     return;
   }
-  board.classList.remove(...Object.values(BOARD_SIZE_CLASSES));
+  boardElement.classList.remove(...Object.values(BOARD_SIZE_CLASSES));
 }
 
-export function setBoardSizeClass(boardSize) {
-  const board = SELECTORS.board();
-  if (!board || !BOARD_SIZE_CLASSES[boardSize]) {
-    console.error('Board element not found or invalid board size provided:', boardSize);
+export function setBoardSizeClass(boardElement, boardSize) {
+  if (!boardElement) {
+    console.error('Board element not provided for setting board size class.');
     return;
   }
-  board.classList.add(BOARD_SIZE_CLASSES[boardSize]);
+  const classToAdd = BOARD_SIZE_CLASSES[boardSize];
+  if (classToAdd) {
+    boardElement.classList.add(classToAdd);
+  } else {
+    console.error(`Invalid board size provided, no class found for: ${boardSize}`);
+  }
 }
 
 function _resetAlertBox() {
