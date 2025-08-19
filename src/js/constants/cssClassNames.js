@@ -14,7 +14,7 @@ export const CSS_CLASSES = {
   WARNING: 'warning',
 
   OFFCANVAS_PANEL: 'offcanvas-panel',
-  SETTING_GRID_SIZE: 'grid-size',
+  SETTING_BOARD_SIZE: 'board-size',
   SETTING_CONTENT_TYPE: 'content-type',
   SETTING_ARABIC: 'content-arabic-number',
   SETTING_JAPANESE: 'content-japanese-number',

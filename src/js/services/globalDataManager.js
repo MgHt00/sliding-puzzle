@@ -13,12 +13,20 @@ export function fetchContentType() {
   return globals.appState[STATE_KEYS.CONTENT_TYPE];
 }
 
+export function fetchBoardSize() {
+  return globals.appState[STATE_KEYS.BOARD_SIZE];
+}
+
 export function fetchRandom() {
   return globals.appState[STATE_KEYS.RANDOM];
 }
 
 export function setContentType(contentType) {
   globals.appState[STATE_KEYS.CONTENT_TYPE] = contentType;
+}
+
+export function setBoardSize(boardSize) {
+  globals.appState[STATE_KEYS.BOARD_SIZE] = boardSize;
 }
 
 export function setRandom(random) {

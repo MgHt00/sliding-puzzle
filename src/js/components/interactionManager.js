@@ -5,7 +5,7 @@ import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtil
 import { swapTiles } from '../utils/animationUtils.js';
 import { showAlert, hideAlert, isElementVisible } from '../utils/domHelpers.js';
 import { showConfirmationAlert } from '../controllers/alertController.js';
-import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
+import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress, fetchBoardSize, setBoardSize } from '../services/globalDataManager.js';
 
 let _isAnimating = false;
 
@@ -30,13 +30,23 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
  * This ensures the UI always reflects the true state, preventing inconsistencies.
  */
 function _syncSettingsUI() {
+  // Sync content type radio buttons
   const currentContentType = fetchContentType();
-  // Find the radio button that corresponds to the current state by using its specific class and value.
-  const radioToCheck = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
-  if (radioToCheck) {
-    radioToCheck.checked = true;
+  const contentTypeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
+  if (contentTypeRadio) {
+    contentTypeRadio.checked = true;
   } else {
     console.error(`Could not find a setting radio button for content type: ${currentContentType}`);
+  }
+
+  // Sync board size radio buttons
+  const currentBoardSize = fetchBoardSize();
+  const boardSizeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_BOARD_SIZE}[value="${currentBoardSize}"]`);
+  if (boardSizeRadio) {
+    boardSizeRadio.checked = true;
+  } else {
+    // This might happen on first load if the default size isn't an option in the HTML, which is fine.
+    console.warn(`Could not find a setting radio button for board size: ${currentBoardSize}`);
   }
 }
 
@@ -153,10 +163,29 @@ async function _handleContentTypeChange(event) {
   }
 }
 
-function _handleBoardSizeChange(event) {
-  console.info("Board size changed. New value:", event.target.value);
-  // Future implementation for changing board size would go here.
-  // It would likely involve a confirmation and board reset, similar to content type change.
+async function _handleBoardSizeChange(event) {
+  const newBoardSize = parseInt(event.target.value, 10);
+  const currentBoardSize = fetchBoardSize();
+
+  if (!newBoardSize || newBoardSize === currentBoardSize) {
+    return;
+  }
+
+  _closeSettingsPanel();
+
+  if (fetchGameInProgress()) {
+    const confirmed = await showConfirmationAlert();
+    if (confirmed) {
+      setBoardSize(newBoardSize);
+      resetBoard();
+    } else {
+      _syncSettingsUI(); // User canceled, so sync UI back to the original state.
+    }
+  } else {
+    console.warn('Game is not in progress. Resetting board with new size', newBoardSize);
+    setBoardSize(newBoardSize);
+    resetBoard();
+  }
 }
 
 /**
@@ -164,7 +193,7 @@ function _handleBoardSizeChange(event) {
  * This creates a scalable, data-driven way to handle setting changes.
  */
 const settingHandlers = {
-  [CSS_CLASSES.SETTING_GRID_SIZE]: _handleBoardSizeChange,
+  [CSS_CLASSES.SETTING_BOARD_SIZE]: _handleBoardSizeChange,
   [CSS_CLASSES.SETTING_CONTENT_TYPE]: _handleContentTypeChange,
 };
 

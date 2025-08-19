@@ -5,7 +5,7 @@ import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
-import { getCssCustomProperty } from './cssHelpers.js';
+import { getCssCustomProperty, setCssCustomProperty } from './cssHelpers.js';
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -35,21 +35,39 @@ function _getGridDimensions() {
     console.error('Board element not found for getting dimensions.');
     return { columns: 0, rows: 0 };
   }
-  const columns = getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, 'number') || 0;
-  const rows = getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, 'number') || 0;
-  return { columns, rows };
+  return {
+    columns: getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, 'number') || 0,
+    rows: getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, 'number') || 0,
+  };
 }
 
-// Creates and appends the correct number of tile elements to the board.
-function _addTiles() {
+/**
+ * Sets the grid dimensions on the board element using CSS custom properties.
+ * This ensures the CSS grid layout matches the application's state.
+ * @param {number} boardSize - The number of columns and rows for the grid.
+ */
+function _setBoardGridStyles(boardSize) {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for setting grid styles.');
+    return;
+  }
+  setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, boardSize);
+  setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, boardSize);
+}
+
+/**
+ * Creates and appends the correct number of tile elements to the board.
+ * @param {number} boardSize - The size of the grid (e.g., 3 for a 3x3 grid).
+ */
+function _addTiles(boardSize) {
   const board = SELECTORS.board();
   if (!board) {
     console.error('Board element not found for adding tiles.');
     return;
   }
 
-  const { columns, rows } = _getGridDimensions();
-  const tileCount = columns * rows;
+  const tileCount = boardSize ** 2;
 
   for (let i = 0; i < tileCount; i++) {
     const tile = document.createElement(HTML_TAGS.DIV);
@@ -165,11 +183,14 @@ export function resetBoard() {
  */
 export function initializeBoard({
   [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04
+  [STATE_KEYS.BOARD_SIZE]: boardSize = STATE_VALUES.DEFAULT_BOARD_SIZE,
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
-  
-  _addTiles();
+
+  _setBoardGridStyles(boardSize);
+  _addTiles(boardSize);
+
   const allTiles = SELECTORS.allTiles();
   const tileCount = allTiles.length;
 
