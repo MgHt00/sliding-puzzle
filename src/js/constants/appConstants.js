@@ -1,3 +1,5 @@
+import { CSS_CLASSES } from "../constants/cssClassNames.js";
+
 export const STATE_KEYS = {
   CONTENT_TYPE: 'contentType',
   RANDOM: 'random',
@@ -7,7 +9,7 @@ export const STATE_KEYS = {
 
 export const STATE_VALUES = {
   DEFAULT_CONTENT: 'arabic-numbers',
-  DEFAULT_BOARD_SIZE: 3,
+  DEFAULT_BOARD_CLASS: CSS_CLASSES.THREE_BY_THREE_BOARD,
   RANDOM: true,
   GAME_IN_PROGRESS: false,
 }

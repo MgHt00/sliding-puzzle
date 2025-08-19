@@ -11,7 +11,12 @@ export const CSS_CLASSES = {
   BOARD: 'puzzle-board',
   TILE: 'puzzle-tile',
   EMPTY_TILE: 'empty-tile',
+  
   WARNING: 'warning',
+
+  THREE_BY_THREE_BOARD: 'three-by-three-board',
+  FOUR_BY_FOUR_BOARD: 'four-by-four-board',
+
 
   OFFCANVAS_PANEL: 'offcanvas-panel',
   SETTING_BOARD_SIZE: 'board-size',

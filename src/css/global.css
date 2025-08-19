@@ -26,7 +26,6 @@
   --font-bangers: "Bangers", system-ui;
   --font-knewave: "Knewave", system-ui;
 
-  /* TO DO: 4x4 board */
   --puzzle-board-columns: 3;
   --puzzle-board-rows: 3;
   --puzzle-board-gap: 5px;
@@ -80,6 +79,23 @@
 .warning {
   --alert-border: solid 3px var(--theme-warning-color);
 }
+
+.three-by-three-board {
+  --puzzle-board-columns: 3;
+  --puzzle-board-rows: 3;
+  --puzzle-board-gap: 5px;
+  --puzzle-board-width: min(80vw, 300px);
+  --puzzle-board-border: 2px solid #333;
+}
+
+.four-by-four-board {
+  --puzzle-board-columns: 4;
+  --puzzle-board-rows: 4;
+  --puzzle-board-gap: 5px;
+  --puzzle-board-width: min(80vw, 300px);
+  --puzzle-board-border: 2px solid #333;
+}
+
 
 * {
   margin: 0px;

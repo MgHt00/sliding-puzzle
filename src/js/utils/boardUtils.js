@@ -46,7 +46,7 @@ function _getGridDimensions() {
  * This ensures the CSS grid layout matches the application's state.
  * @param {number} boardSize - The number of columns and rows for the grid.
  */
-function _setBoardGridStyles(boardSize) {
+/*function _setBoardGridStyles(boardSize) {
   const board = SELECTORS.board();
   if (!board) {
     console.error('Board element not found for setting grid styles.');
@@ -54,6 +54,19 @@ function _setBoardGridStyles(boardSize) {
   }
   setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, boardSize);
   setCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, boardSize);
+}*/
+
+/**
+ * Sets the grid dimensions on the board element using CSS custom properties.
+ * This ensures the CSS grid layout matches the application's state.
+ * @param {string} boardClass - The number of columns and rows for the grid.
+ */
+function _setBoardGridStyles(boardClass) {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for setting grid styles.');
+    return;
+  }
 }
 
 /**
@@ -183,13 +196,13 @@ export function resetBoard() {
  */
 export function initializeBoard({
   [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04
-  [STATE_KEYS.BOARD_SIZE]: boardSize = STATE_VALUES.DEFAULT_BOARD_SIZE,
+  [STATE_KEYS.BOARD_SIZE]: boardClass = STATE_VALUES.DEFAULT_BOARD_CLASS,
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
 
-  _setBoardGridStyles(boardSize);
-  _addTiles(boardSize);
+  _setBoardGridStyles(boardClass);
+  _addTiles(boardClass);
 
   const allTiles = SELECTORS.allTiles();
   const tileCount = allTiles.length;

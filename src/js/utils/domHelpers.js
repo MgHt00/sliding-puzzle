@@ -51,6 +51,30 @@ const _classMap = {
   [ALERT.TYPE_WARNING]: CSS_CLASSES.WARNING,
 };
 
+const _boardSizeClassMap = {
+  [CSS_CLASSES.THREE_BY_THREE_BOARD]: CSS_CLASSES.THREE_BY_THREE_BOARD,
+  [CSS_CLASSES.FOUR_BY_FOUR_BOARD]: CSS_CLASSES.FOUR_BY_FOUR_BOARD,
+}
+
+export function resetBoardSizeClass() {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for resetting board size class.');
+    return;
+  }
+  board.classList.remove(...Object.values(_boardSizeClassMap));
+}
+
+export function setBoardSizeClass(boardSize) {
+  const board = SELECTORS.board();
+  if (!board || !_boardSizeClassMap[boardSize]) {
+    console.error('Board element not found or invalid board size provided:', boardSize);
+    return;
+  }
+  board.classList.add(_boardSizeClassMap[boardSize]);
+}
+
+
 function _resetAlertBox() {
   const alertWrapper = SELECTORS.alertWrapper();  
   const alertHeading = SELECTORS.alertHeading();
