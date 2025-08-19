@@ -2,15 +2,16 @@ export const STATE_KEYS = {
   CONTENT_TYPE: 'contentType',
   RANDOM: 'random',
   GAME_IN_PROGRESS: 'gameInProgress',
+  BOARD_SIZE: 'boardSize',
 }
 
 export const STATE_VALUES = {
+  DEFAULT_CONTENT: 'arabic-numbers',
   RANDOM: true,
   GAME_IN_PROGRESS: false,
 }
 
 export const CONTENT_TYPES = {
-  DEFAULT: 'arabic-numbers',
   ARABIC_NUMBERS: 'arabic-numbers',
   JAPANESE_NUMBERS: 'japanese-numbers',
   // PHOTOS: 'photos', // for future use
