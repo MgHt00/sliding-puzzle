@@ -193,7 +193,7 @@ async function _handleBoardSizeChange(event) {
  * This creates a scalable, data-driven way to handle setting changes.
  */
 const settingHandlers = {
-  [CSS_CLASSES.SETTING_BOARD_SIZE]: _handleBoardSizeChange,
+  [CSS_CLASSES.SETTING_GRID_SIZE]: _handleBoardSizeChange,
   [CSS_CLASSES.SETTING_CONTENT_TYPE]: _handleContentTypeChange,
 };
 
