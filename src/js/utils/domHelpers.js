@@ -1,6 +1,6 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
-import { ALERT } from "../constants/appConstants.js";
+import { ALERT, BOARD_SIZES } from "../constants/appConstants.js";
 
 /**
  * Checks if an element is visible by checking for the absence of the 'd-none' class.
@@ -52,8 +52,8 @@ const _classMap = {
 };
 
 const _boardSizeClassMap = {
-  [CSS_CLASSES.THREE_BY_THREE_BOARD]: CSS_CLASSES.THREE_BY_THREE_BOARD,
-  [CSS_CLASSES.FOUR_BY_FOUR_BOARD]: CSS_CLASSES.FOUR_BY_FOUR_BOARD,
+  [BOARD_SIZES[CSS_CLASSES.THREE_BY_THREE_BOARD]]: CSS_CLASSES.THREE_BY_THREE_BOARD,
+  [BOARD_SIZES[CSS_CLASSES.FOUR_BY_FOUR_BOARD]]: CSS_CLASSES.FOUR_BY_FOUR_BOARD,
 }
 
 export function resetBoardSizeClass() {

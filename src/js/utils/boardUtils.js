@@ -6,6 +6,8 @@ import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
 import { getCssCustomProperty, setCssCustomProperty } from './cssHelpers.js';
+import { resetBoardSizeClass, setBoardSizeClass } from './domHelpers.js';
+
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -61,7 +63,10 @@ function _getGridDimensions() {
  * This ensures the CSS grid layout matches the application's state.
  * @param {string} boardClass - The number of columns and rows for the grid.
  */
-function _setBoardGridStyles(boardClass) {
+function _setBoardGridStyles(boardSize) {
+  resetBoardSizeClass();
+  setBoardSizeClass(boardSize);
+
   const board = SELECTORS.board();
   if (!board) {
     console.error('Board element not found for setting grid styles.');
@@ -80,7 +85,7 @@ function _addTiles(boardSize) {
     return;
   }
 
-  const tileCount = boardSize ** 2;
+  const tileCount = boardSize * boardSize;
 
   for (let i = 0; i < tileCount; i++) {
     const tile = document.createElement(HTML_TAGS.DIV);
@@ -195,14 +200,14 @@ export function resetBoard() {
  * @param {boolean} [options.random=true] - Whether to randomize the tile positions.
  */
 export function initializeBoard({
-  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04
-  [STATE_KEYS.BOARD_SIZE]: boardClass = STATE_VALUES.DEFAULT_BOARD_CLASS,
+  [STATE_KEYS.CONTENT_TYPE]: contentType = STATE_VALUES.DEFAULT_CONTENT, //LT04
+  [STATE_KEYS.BOARD_SIZE]: boardSize = STATE_VALUES.DEFAULT_BOARD_SIZE,
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
 
-  _setBoardGridStyles(boardClass);
-  _addTiles(boardClass);
+  _setBoardGridStyles(boardSize);
+  _addTiles(boardSize);
 
   const allTiles = SELECTORS.allTiles();
   const tileCount = allTiles.length;
