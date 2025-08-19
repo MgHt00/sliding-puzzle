@@ -127,19 +127,6 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
-const classListMap = {
-  boardSize: CSS_CLASSES.SETTING_GRID_SIZE,
-  contentType: CSS_CLASSES.SETTING_CONTENT_TYPE,
-}
-
-function _classListContains(element) {
-  for (let [key, className] of Object.entries(classListMap)) {
-    if (element.classList.contains(className)) {
-      return key;
-    } 
-  }
-}
-
 async function _handleContentTypeChange(event) {
   const newContentType = event.target.value;
   const currentContentType = fetchContentType();
@@ -166,27 +153,35 @@ async function _handleContentTypeChange(event) {
   }
 }
 
+function _handleBoardSizeChange(event) {
+  console.info("Board size changed. New value:", event.target.value);
+  // Future implementation for changing board size would go here.
+  // It would likely involve a confirmation and board reset, similar to content type change.
+}
+
 /**
- * Handles a change event on the content type settings.
- * @param {Event} event - The event object from the click.
+ * A map of setting classes to their corresponding change handler functions.
+ * This creates a scalable, data-driven way to handle setting changes.
+ */
+const settingHandlers = {
+  [CSS_CLASSES.SETTING_GRID_SIZE]: _handleBoardSizeChange,
+  [CSS_CLASSES.SETTING_CONTENT_TYPE]: _handleContentTypeChange,
+};
+
+/**
+ * Handles a change event on any setting within the offcanvas panel.
+ * It uses the settingHandlers map to delegate to the correct function.
+ * @param {Event} event - The event object from the change event.
  */
 async function _handleSettingChange(event) {
-  let targetSetting = _classListContains(event.target);
-  if (!targetSetting) {
-    return;
-  }
-
-  switch (targetSetting) {
-    case 'boardSize':
-      console.info("Board size changed");
-      break;
-    
-    case 'contentType':
-      _handleContentTypeChange(event);
-      break;
-    
-    default:
-      break;
+  const target = event.target;
+  // Find the handler that corresponds to a class on the event target.
+  for (const [className, handler] of Object.entries(settingHandlers)) {
+    if (target.classList.contains(className)) {
+      // Execute the handler and stop searching.
+      await handler(event);
+      return;
+    }
   }
 }
 
@@ -195,7 +190,7 @@ function _addOffcanvasListeners() {
   if (!offcanvasPanel) return;
 
   offcanvasPanel.addEventListener('show.bs.offcanvas', _syncSettingsUI);
-  offcanvasPanel.addEventListener('click', _handleSettingChange);
+  offcanvasPanel.addEventListener('change', _handleSettingChange);
 }
 
 function _addGlobalKeyPressListener() {
