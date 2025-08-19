@@ -17,17 +17,17 @@ export const BOARD_SIZE_CLASSES = {
   [SIZES.FOUR]: CSS_CLASSES.FOUR_BY_FOUR_BOARD,
 }
 
-export const STATE_VALUES = {
-  DEFAULT_CONTENT: 'arabic-numbers',
-  DEFAULT_BOARD_SIZE: SIZES.THREE,
-  RANDOM: true,
-  GAME_IN_PROGRESS: false,
-}
-
 export const CONTENT_TYPES = {
   ARABIC_NUMBERS: 'arabic-numbers',
   JAPANESE_NUMBERS: 'japanese-numbers',
   // PHOTOS: 'photos', // for future use
+}
+
+export const STATE_VALUES = {
+  DEFAULT_CONTENT: CONTENT_TYPES.ARABIC_NUMBERS,
+  DEFAULT_BOARD_SIZE: SIZES.THREE,
+  RANDOM: true,
+  GAME_IN_PROGRESS: false,
 }
 
 export const ALERT = {
@@ -40,10 +40,6 @@ export const ALERT = {
   WON_TEXT: 'You have won the game!',
   WARN_HEADER: 'Sure?',
   WARN_TEXT: 'This will reset the game. Are you sure?',
-}
-
-export const TEXT = {
-  WON: 'Congratulations! You have won!',
 }
 
 export const HTML_TAGS = {
