@@ -182,6 +182,9 @@ export function resetBoard() {
   // By removing all tiles, we ensure a clean slate for re-initialization.
   _removeAllTiles();
 
+  // Removing current board size class before reset. 
+  resetBoardSizeClass();
+
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
     initializeBoard({ ...state, [STATE_KEYS.RANDOM]: false });
