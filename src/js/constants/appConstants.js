@@ -1,19 +1,38 @@
+import { CSS_CLASSES } from "./cssClassNames.js";
+
 export const STATE_KEYS = {
   CONTENT_TYPE: 'contentType',
   RANDOM: 'random',
   GAME_IN_PROGRESS: 'gameInProgress',
+  BOARD_SIZE: 'boardSize',
 }
 
-export const STATE_VALUES = {
-  RANDOM: true,
-  GAME_IN_PROGRESS: false,
+export const SIZES = {
+  THREE: 3,
+  FOUR: 4,
+}
+
+export const BOARD_SIZE_CLASSES = {
+  [SIZES.THREE]: CSS_CLASSES.THREE_BY_THREE_BOARD,
+  [SIZES.FOUR]: CSS_CLASSES.FOUR_BY_FOUR_BOARD,
 }
 
 export const CONTENT_TYPES = {
-  DEFAULT: 'arabic-numbers',
   ARABIC_NUMBERS: 'arabic-numbers',
   JAPANESE_NUMBERS: 'japanese-numbers',
   // PHOTOS: 'photos', // for future use
+}
+
+export const LANGUAGES = {
+  [CONTENT_TYPES.ARABIC_NUMBERS]: CSS_CLASSES.LANG_EN,
+  [CONTENT_TYPES.JAPANESE_NUMBERS]: CSS_CLASSES.LANG_JP,
+}
+
+export const STATE_VALUES = {
+  DEFAULT_CONTENT: CONTENT_TYPES.ARABIC_NUMBERS,
+  DEFAULT_BOARD_SIZE: SIZES.THREE,
+  RANDOM: true,
+  GAME_IN_PROGRESS: false,
 }
 
 export const ALERT = {
@@ -28,6 +47,7 @@ export const ALERT = {
   WARN_TEXT: 'This will reset the game. Are you sure?',
 }
 
-export const TEXT = {
-  WON: 'Congratulations! You have won!',
+export const HTML_TAGS = {
+  DIV: 'div',
+  SPAN: 'span',
 }

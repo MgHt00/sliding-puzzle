@@ -5,7 +5,7 @@ import { isTileMovable, checkWinCondition, resetBoard } from '../utils/boardUtil
 import { swapTiles } from '../utils/animationUtils.js';
 import { showAlert, hideAlert, isElementVisible } from '../utils/domHelpers.js';
 import { showConfirmationAlert } from '../controllers/alertController.js';
-import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress } from '../services/globalDataManager.js';
+import { fetchContentType, setContentType, fetchGameInProgress, setGameInProgress, fetchBoardSize, setBoardSize } from '../services/globalDataManager.js';
 
 let _isAnimating = false;
 
@@ -30,13 +30,23 @@ function _addEventListener(selectorFn, eventName, eventHandler, errorMessage) {
  * This ensures the UI always reflects the true state, preventing inconsistencies.
  */
 function _syncSettingsUI() {
+  // Sync content type radio buttons
   const currentContentType = fetchContentType();
-  // Find the radio button that corresponds to the current state by using its specific class and value.
-  const radioToCheck = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
-  if (radioToCheck) {
-    radioToCheck.checked = true;
+  const contentTypeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_CONTENT_TYPE}[value="${currentContentType}"]`);
+  if (contentTypeRadio) {
+    contentTypeRadio.checked = true;
   } else {
     console.error(`Could not find a setting radio button for content type: ${currentContentType}`);
+  }
+
+  // Sync board size radio buttons
+  const currentBoardSize = fetchBoardSize();
+  const boardSizeRadio = document.querySelector(`.${CSS_CLASSES.SETTING_GRID_SIZE}[value="${currentBoardSize}"]`);
+  if (boardSizeRadio) {
+    boardSizeRadio.checked = true;
+  } else {
+    // This might happen on first load if the default size isn't an option in the HTML, which is fine.
+    console.warn(`Could not find a setting radio button for board size: ${currentBoardSize}`);
   }
 }
 
@@ -127,15 +137,7 @@ function _addResetButtonListener() {
   }, 'Reset button not found.');
 }
 
-/**
- * Handles a change event on the content type settings.
- * @param {Event} event - The event object from the click.
- */
-async function _handleSettingChange(event) {
-  if (!event.target.classList.contains(CSS_CLASSES.SETTING_CONTENT_TYPE)) {
-    return;
-  }
-
+async function _handleContentTypeChange(event) {
   const newContentType = event.target.value;
   const currentContentType = fetchContentType();
 
@@ -161,12 +163,63 @@ async function _handleSettingChange(event) {
   }
 }
 
+async function _handleBoardSizeChange(event) {
+  const newBoardSize = parseInt(event.target.value, 10);
+  const currentBoardSize = fetchBoardSize();
+
+  if (!newBoardSize || newBoardSize === currentBoardSize) {
+    return;
+  }
+
+  _closeSettingsPanel();
+
+  if (fetchGameInProgress()) {
+    const confirmed = await showConfirmationAlert();
+    if (confirmed) {
+      setBoardSize(newBoardSize);
+      resetBoard();
+    } else {
+      _syncSettingsUI(); // User canceled, so sync UI back to the original state.
+    }
+  } else {
+    console.warn('Game is not in progress. Resetting board with new size', newBoardSize);
+    setBoardSize(newBoardSize);
+    resetBoard();
+  }
+}
+
+/**
+ * A map of setting classes to their corresponding change handler functions.
+ * This creates a scalable, data-driven way to handle setting changes.
+ */
+const settingHandlers = {
+  [CSS_CLASSES.SETTING_GRID_SIZE]: _handleBoardSizeChange,
+  [CSS_CLASSES.SETTING_CONTENT_TYPE]: _handleContentTypeChange,
+};
+
+/**
+ * Handles a change event on any setting within the offcanvas panel.
+ * It uses the settingHandlers map to delegate to the correct function.
+ * @param {Event} event - The event object from the change event.
+ */
+async function _handleSettingChange(event) {
+  const target = event.target;
+  // Find the handler that corresponds to a class on the event target.
+  for (const [className, handler] of Object.entries(settingHandlers)) {
+    if (target.classList.contains(className)) {
+      // Execute the handler and stop searching.
+      await handler(event);
+      return;
+    }
+  }
+}
+
 function _addOffcanvasListeners() {
   const offcanvasPanel = SELECTORS.offcanvasPanel();
   if (!offcanvasPanel) return;
 
   offcanvasPanel.addEventListener('show.bs.offcanvas', _syncSettingsUI);
-  offcanvasPanel.addEventListener('click', _handleSettingChange);
+  offcanvasPanel.addEventListener('change', _handleSettingChange);
 }
 
 function _addGlobalKeyPressListener() {

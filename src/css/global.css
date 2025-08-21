@@ -60,6 +60,12 @@
                                   rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   --alert-btn-margin: 18px 9px 0 0;
 
+  --offcanvas-subheading-text-decoration: underline wavy 3px;
+  --offcanvas-subheading-skip-ink: none;
+  --offcanvas-subheading-underline-offset: 8px;
+  --offcanvas-subheading-margin-top: 30px;
+  --offcanvas-subheading-first-sibling-margin-top: 20px;
+
   --theme-background-color: var(--color-night-darker, lightslategray);
   --theme-decorative-font-family: var(--font-knewave, system-ui);
   --theme-decorative-font-color: var(--color-night-ascent, #DFD0B8);
@@ -73,6 +79,28 @@
 .warning {
   --alert-border: solid 3px var(--theme-warning-color);
 }
+
+.three-by-three-board {
+  --puzzle-board-columns: 3;
+  --puzzle-board-rows: 3;
+  --puzzle-board-gap: 5px;
+  --puzzle-board-width: min(80vw, 300px);
+  --puzzle-board-border: 2px solid #333;
+}
+
+.four-by-four-board {
+  --puzzle-board-columns: 4;
+  --puzzle-board-rows: 4;
+  --puzzle-board-gap: 5px;
+  --puzzle-board-width: min(80vw, 300px);
+  --puzzle-board-border: 2px solid #333;
+  --puzzle-tile-font-size: 45px;
+}
+
+.four-by-four-board.lang-jp {
+  --puzzle-tile-font-size: 30px;
+}
+
 
 * {
   margin: 0px;
@@ -98,11 +126,36 @@ body {
     font-size: var(--setting-heading-font-size, 30px);
   }
 
-  & .form-check {
-    margin: var(--setting-option-margin);
+  & h5 {
+    font-family: var(--theme-decorative-font-family);
+    color: var(--theme-decorative-font-color);
+    text-decoration: var(--offcanvas-subheading-text-decoration);
+    text-decoration-skip-ink: var(--offcanvas-subheading-skip-ink);
+    text-underline-offset: var(--offcanvas-subheading-underline-offset);
   }
 
-  
+  & h5:not(:first-child) {
+    margin-top: var(--offcanvas-subheading-margin-top);
+  }
+
+  & h5+* {
+    margin-top: var(--offcanvas-subheading-first-sibling-margin-top);
+  }
+
+  & .btn-label:hover,
+  & input[type="radio"]:checked + .btn-label {  /* to target the label based on the state of the radio input. */
+    background-color: var(--theme-decorative-font-color);
+    color: var(--theme-background-color);
+  }
+
+  & .setting-content {
+    display: flex;
+    gap: 10px;
+
+    & .form-check {
+    margin: var(--setting-option-margin);
+    }
+  }
 }
 
 .puzzle-board {

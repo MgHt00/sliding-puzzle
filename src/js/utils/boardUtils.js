@@ -1,10 +1,13 @@
 import { SELECTORS } from '../services/selectors.js';
 import { CSS_CUSTOM_PROPERTIES, CSS_CLASSES } from '../constants/cssClassNames.js';
-import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES } from '../constants/appConstants.js';
-import { fetchState, fetchGameInProgress } from '../services/globalDataManager.js';
+import { CONTENT_TYPES, STATE_KEYS, STATE_VALUES, HTML_TAGS } from '../constants/appConstants.js';
+import { fetchState } from '../services/globalDataManager.js';
 import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
+import { getCssCustomProperty, setCssCustomProperty } from './cssHelpers.js';
+import { resetBoardSizeClass, setBoardSizeClass, resetBoardLanguage, setBoardLanguage } from './domHelpers.js';
+
 
 /**
  * Renders the provided content onto the puzzle tiles.
@@ -34,10 +37,58 @@ function _getGridDimensions() {
     console.error('Board element not found for getting dimensions.');
     return { columns: 0, rows: 0 };
   }
-  const style = getComputedStyle(board);
-  const columns = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS), 10) || 0;
-  const rows = parseInt(style.getPropertyValue(CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS), 10) || 0;
-  return { columns, rows };
+  return {
+    columns: getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_COLUMNS, 'number') || 0,
+    rows: getCssCustomProperty(board, CSS_CUSTOM_PROPERTIES.PUZZLE_BOARD_ROWS, 'number') || 0,
+  };
+}
+
+/**
+ * Sets the grid dimensions on the board element using CSS custom properties.
+ * This ensures the CSS grid layout matches the application's state.
+ * @param {number} boardSize - The number of columns and rows for the grid.
+ */
+function _setBoardGridStyles(boardSize, language) {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for setting grid styles.');
+    return;
+  }
+  resetBoardSizeClass(board);
+  resetBoardLanguage(board);
+  setBoardSizeClass(board, boardSize);
+  setBoardLanguage(board, language);
+}
+
+/**
+ * Creates and appends the correct number of tile elements to the board.
+ * @param {number} boardSize - The size of the grid (e.g., 3 for a 3x3 grid).
+ */
+function _addTiles(boardSize) {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for adding tiles.');
+    return;
+  }
+
+  const tileCount = boardSize * boardSize;
+
+  for (let i = 0; i < tileCount; i++) {
+    const tile = document.createElement(HTML_TAGS.DIV);
+    tile.classList.add(CSS_CLASSES.TILE);
+    board.appendChild(tile);
+  }
+}
+
+// Efficiently removes all tile elements from the board.
+function _removeAllTiles() {
+  const board = SELECTORS.board();
+  if (!board) {
+    console.error('Board element not found for removing tiles.');
+    return;
+  }
+
+  board.replaceChildren();
 }
 
 /**
@@ -65,39 +116,8 @@ function _addEmptyTile(tiles) {
   tiles[randomIndex].classList.add(CSS_CLASSES.EMPTY_TILE);
 }
 
-function _removeEmptyTile() {
-  console.info('Removing empty tile...');
-  const emptyTile = SELECTORS.emptyTile();
-  if (emptyTile) {
-    emptyTile.classList.remove(CSS_CLASSES.EMPTY_TILE);
-  } else {
-    console.error('Empty tile not found.');
-  }
-}
-
-function _removeTileContent() {
-  console.info('Removing tile content...');
-  const allTiles = SELECTORS.allTiles();
-  allTiles.forEach((tile) => {
-    tile.innerHTML = '';
-  });
-}
-
+// Gets the row and column of a tile based on its index in the DOM.
 /**
- * Removes any inline styles that may have been added during animations.
- * This is crucial for preventing state-related bugs where a tile might be
- * left unclickable (`pointer-events: none`) after an interrupted animation.
- * By using `cssText`, we clear all inline styles for a comprehensive reset.
- */
-function _clearTileStyles() {
-  console.info('Clearing all tile inline styles...');
-  const allTiles = SELECTORS.allTiles();
-  allTiles.forEach(tile => {
-    tile.style.cssText = '';
-  });
-}
-/**
- * Gets the row and column of a tile based on its index in the DOM.
  * This has been refactored to read from data attributes for better performance.
  * @param {Element} tile - The tile element.
  * @returns {{row: number, col: number}|null}
@@ -136,12 +156,23 @@ export function isTileMovable(tile, emptyTile) {
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
+/**
+ * Resets the entire puzzle board to a new state.
+ * It clears all existing tiles and re-initializes the board based on the
+ * current global state, or a 'solved' state if in test mode.
+ */
 export function resetBoard() {
   console.warn('Resetting board...');
   const state = fetchState();
-  _removeEmptyTile();
-  _removeTileContent();
-  _clearTileStyles();
+  
+  _removeAllTiles();
+
+  // Removing current board size class before re-initializing.
+  const board = SELECTORS.board();
+  if (board) {
+    resetBoardSizeClass(board);
+    resetBoardLanguage(board);
+  }
 
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
@@ -161,13 +192,19 @@ export function resetBoard() {
  * @param {boolean} [options.random=true] - Whether to randomize the tile positions.
  */
 export function initializeBoard({
-  [STATE_KEYS.CONTENT_TYPE]: contentType = CONTENT_TYPES.DEFAULT, //LT04 - computed-property-destructuring
+  [STATE_KEYS.CONTENT_TYPE]: contentType = STATE_VALUES.DEFAULT_CONTENT, //LT04
+  [STATE_KEYS.BOARD_SIZE]: boardSize = STATE_VALUES.DEFAULT_BOARD_SIZE,
   [STATE_KEYS.RANDOM]: random = STATE_VALUES.RANDOM,
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
+
+  _setBoardGridStyles(boardSize, contentType);
+  _addTiles(boardSize);
+
   const allTiles = SELECTORS.allTiles();
-  const { columns, rows } = _getGridDimensions();
   const tileCount = allTiles.length;
+
+  const { columns, rows } = _getGridDimensions();
 
   if (tileCount !== columns * rows) {
     console.error('Mismatch between tile count in HTML and grid dimensions in CSS.');
@@ -238,6 +275,7 @@ function _isJapaneseSequence(allTiles) {
   }
   return true;
 }
+
 /**
  * Checks if the puzzle is in its winning state.
  * The win condition is met when all tiles are in sequential order (1, 2, 3, ...)

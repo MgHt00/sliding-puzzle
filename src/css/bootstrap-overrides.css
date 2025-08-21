@@ -2,6 +2,14 @@
    Bootstrap Overrides
    ========================================================================== */
 
+/* Set a default style for form inputs for better contrast on dark backgrounds.
+ * This ensures that even unchecked radio buttons and checkboxes are clearly visible.
+ */
+.form-check-input {
+  background-color: transparent;
+  border-color: var(--color-night-light);
+}
+
 /* Change the background and border color of checked checkboxes and radio buttons */
 .form-check-input:checked {
   background-color: var(--theme-decorative-font-color);

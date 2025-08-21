@@ -1,6 +1,6 @@
 import { SELECTORS } from "../services/selectors.js";
 import { CSS_CLASSES } from "../constants/cssClassNames.js";
-import { ALERT } from "../constants/appConstants.js";
+import { ALERT, BOARD_SIZE_CLASSES, LANGUAGES } from "../constants/appConstants.js";
 
 /**
  * Checks if an element is visible by checking for the absence of the 'd-none' class.
@@ -50,6 +50,48 @@ function _hideLoadingSpinner() {
 const _classMap = {
   [ALERT.TYPE_WARNING]: CSS_CLASSES.WARNING,
 };
+
+export function resetBoardSizeClass(boardElement) {
+  if (!boardElement) {
+    console.error('Board element not found for resetting board size class.');
+    return;
+  }
+  boardElement.classList.remove(...Object.values(BOARD_SIZE_CLASSES));
+}
+
+export function setBoardSizeClass(boardElement, boardSize) {
+  if (!boardElement) {
+    console.error('Board element not provided for setting board size class.');
+    return;
+  }
+  const classToAdd = BOARD_SIZE_CLASSES[boardSize];
+  if (classToAdd) {
+    boardElement.classList.add(classToAdd);
+  } else {
+    console.error(`Invalid board size provided, no class found for: ${boardSize}`);
+  }
+}
+
+export function resetBoardLanguage(boardElement) {
+  if (!boardElement) {
+    console.error('Board element not found for resetting board language class.');
+    return;
+  }
+  boardElement.classList.remove(...Object.values(LANGUAGES));
+}
+
+export function setBoardLanguage(boardElement, language) {
+  if (!boardElement) {
+    console.error('Board element not provided for setting board language class.');
+    return;
+  }
+  const classToAdd = LANGUAGES[language];
+  if (classToAdd) {
+    boardElement.classList.add(classToAdd);
+  } else {
+    console.error(`Invalid language provided, no class found for: ${language}`);
+  }
+}
 
 function _resetAlertBox() {
   const alertWrapper = SELECTORS.alertWrapper();  
