@@ -16,7 +16,8 @@ export const CSS_CLASSES = {
 
   THREE_BY_THREE_BOARD: 'three-by-three-board',
   FOUR_BY_FOUR_BOARD: 'four-by-four-board',
-
+  LANG_JP: 'lang-jp',
+  LANG_EN: 'lang-en',
 
   OFFCANVAS_PANEL: 'offcanvas-panel',
   SETTING_GRID_SIZE: 'grid-size',

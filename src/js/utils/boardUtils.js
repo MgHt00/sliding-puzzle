@@ -6,7 +6,7 @@ import { generateRandomNumber, generateSequence } from './mathHelpers.js';
 import { isWinTestMode } from './urlUtils.js';
 import { toJapaneseNumeral } from './numberFormatters.js';
 import { getCssCustomProperty, setCssCustomProperty } from './cssHelpers.js';
-import { resetBoardSizeClass, setBoardSizeClass } from './domHelpers.js';
+import { resetBoardSizeClass, setBoardSizeClass, resetBoardLanguage, setBoardLanguage } from './domHelpers.js';
 
 
 /**
@@ -48,14 +48,16 @@ function _getGridDimensions() {
  * This ensures the CSS grid layout matches the application's state.
  * @param {number} boardSize - The number of columns and rows for the grid.
  */
-function _setBoardGridStyles(boardSize) {
+function _setBoardGridStyles(boardSize, language) {
   const board = SELECTORS.board();
   if (!board) {
     console.error('Board element not found for setting grid styles.');
     return;
   }
   resetBoardSizeClass(board);
+  resetBoardLanguage(board);
   setBoardSizeClass(board, boardSize);
+  setBoardLanguage(board, language);
 }
 
 /**
@@ -167,7 +169,10 @@ export function resetBoard() {
 
   // Removing current board size class before re-initializing.
   const board = SELECTORS.board();
-  if (board) resetBoardSizeClass(board);
+  if (board) {
+    resetBoardSizeClass(board);
+    resetBoardLanguage(board);
+  }
 
   if (isWinTestMode()) {
     // For test mode, force a non-random (solved) board state.
@@ -193,7 +198,7 @@ export function initializeBoard({
 } = {}) {
   console.info(`Initializing board... (random: ${random})`);
 
-  _setBoardGridStyles(boardSize);
+  _setBoardGridStyles(boardSize, contentType);
   _addTiles(boardSize);
 
   const allTiles = SELECTORS.allTiles();
